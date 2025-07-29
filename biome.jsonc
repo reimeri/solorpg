@@ -1,0 +1,24 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.0.5/schema.json",
+  "extends": ["ultracite"],
+  "linter": {
+    "domains": {
+      "next": "none" // disables every Next.js rule. For some reason this gets turned on by default
+    },
+    "rules": {
+      "nursery": {
+        "useSortedClasses": "warn"
+      }
+    }
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!**/dist",
+      "!**/build",
+      "!**/*.gen.ts",
+      "!**/vite.config.ts.timestamp-*.mjs",
+      "!**/src/codegen"
+    ]
+  }
+}
