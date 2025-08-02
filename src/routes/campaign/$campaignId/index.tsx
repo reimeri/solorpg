@@ -38,7 +38,7 @@ function RouteComponent() {
         <div className="my-2 flex w-full max-w-[500px] flex-col gap-4">
           <CharacterStats />
           <Gear />
-          <Inventory />
+          <Inventory campaign={campaign} />
         </div>
         <div className="my-2 flex w-full max-w-[1000px] flex-col gap-4">
           <ChatMessageWindow />
