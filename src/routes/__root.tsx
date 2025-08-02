@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import type * as React from 'react';
+import { TopBar } from '~/components/TopBar';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -31,6 +32,7 @@ export const Route = createRootRouteWithContext<{
 function RootComponent() {
   return (
     <RootDocument>
+      <TopBar />
       <Outlet />
       <TanStackRouterDevtools />
     </RootDocument>
