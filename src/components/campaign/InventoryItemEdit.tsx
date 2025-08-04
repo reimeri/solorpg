@@ -1,10 +1,13 @@
 import { useConvexMutation } from '@convex-dev/react-query';
+import type { Id } from 'convex/_generated/dataModel';
 import type { InventoryItem } from 'convex/schema';
 import { useState } from 'react';
 import { api } from '~/../convex/_generated/api';
 
 interface InventoryItemEditProps {
   inventoryItem: InventoryItem;
+  isEditing?: boolean;
+  existingId?: Id<'inventoryItems'>;
   setEditedInventoryItem: (item: InventoryItem | null) => void;
 }
 
@@ -278,21 +281,39 @@ function InventoryEditForm(props: InventoryItemEditProps) {
 
 export function InventoryItemEdit({
   inventoryItem,
+  isEditing = false,
+  existingId,
   setEditedInventoryItem,
 }: InventoryItemEditProps) {
-  const updateInventoryItem = useConvexMutation(api.inventoryItems.create);
+  const createInventoryItem = useConvexMutation(api.inventoryItems.create);
+  const updateInventoryItem = useConvexMutation(api.inventoryItems.update);
 
   const handleSaveItem = async (modifiedItem: InventoryItem) => {
-    await updateInventoryItem({
-      item: modifiedItem,
-    });
-    setEditedInventoryItem(null);
+    try {
+      if (isEditing && existingId) {
+        // Update existing item
+        await updateInventoryItem({
+          id: existingId,
+          item: modifiedItem,
+        });
+      } else {
+        // Create new item
+        await createInventoryItem({
+          item: modifiedItem,
+        });
+      }
+      setEditedInventoryItem(null);
+    } catch {
+      // Don't close the form on error so user can retry
+    }
   };
 
   return (
     <div className="flex h-full w-full flex-col rounded-lg bg-slate-50 p-4 shadow-md">
       <div className="flex h-full w-full flex-col">
-        <h1 className="mb-4 font-bold text-2xl">Create Inventory Item</h1>
+        <h1 className="mb-4 font-bold text-2xl">
+          {isEditing ? 'Edit Inventory Item' : 'Create Inventory Item'}
+        </h1>
         <InventoryEditForm
           inventoryItem={inventoryItem}
           setEditedInventoryItem={(item) => {

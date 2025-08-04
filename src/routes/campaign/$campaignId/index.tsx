@@ -10,6 +10,7 @@ import { ChatMessageWindow } from '~/components/campaign/ChatMessageWindow';
 import { Gear } from '~/components/campaign/Gear';
 import { Inventory } from '~/components/campaign/Inventory';
 import { InventoryItemEdit } from '~/components/campaign/InventoryItemEdit';
+import { InventoryItemView } from '~/components/campaign/InventoryItemView';
 import { Lorebook } from '~/components/campaign/Lorebook';
 import { TOP_BAR_HEIGHT } from '~/components/TopBar';
 import { api } from '../../../../convex/_generated/api';
@@ -33,6 +34,8 @@ function RouteComponent() {
   });
   const [editedInventoryItem, setEditedInventoryItem] =
     useState<InventoryItem | null>(null);
+  const [viewedInventoryItem, setViewedInventoryItem] =
+    useState<Doc<'inventoryItems'> | null>(null);
 
   if (!campaign) {
     return (
@@ -42,6 +45,9 @@ function RouteComponent() {
     );
   }
 
+  const showMainContent =
+    editedInventoryItem === null && viewedInventoryItem === null;
+
   return (
     <div
       className="flex w-full justify-center gap-4"
@@ -49,19 +55,27 @@ function RouteComponent() {
     >
       <CampaignContext value={campaign ?? null}>
         <div className="my-2 flex w-full max-w-[500px] flex-col gap-4">
-          {editedInventoryItem ? (
+          {editedInventoryItem && (
             <InventoryItemEdit
               inventoryItem={editedInventoryItem}
               setEditedInventoryItem={setEditedInventoryItem}
             />
-          ) : (
+          )}
+          {viewedInventoryItem && (
+            <InventoryItemView
+              inventoryItem={viewedInventoryItem}
+              setViewedInventoryItem={setViewedInventoryItem}
+            />
+          )}
+          {showMainContent && (
             <>
               <CharacterStats />
               <Gear />
               <Inventory
                 campaign={campaign}
                 setEditedInventoryItem={setEditedInventoryItem}
-              />{' '}
+                setViewedInventoryItem={setViewedInventoryItem}
+              />
             </>
           )}
         </div>

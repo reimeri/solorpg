@@ -21,6 +21,29 @@ export const get = query({
   },
 });
 
+export const getById = query({
+  args: { id: v.id('inventoryItems') },
+  handler: async (ctx, { id }) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) {
+      throw new Error('User must be authenticated to fetch inventory items');
+    }
+
+    const item = await ctx.db.get(id);
+    if (!item) {
+      return null;
+    }
+
+    // Verify the item belongs to the user
+    if (item.owner !== userId) {
+      throw new Error('You can only view your own inventory items');
+    }
+
+    return item;
+  },
+});
+
 export const create = mutation({
   args: { item: inventoryItemFields },
   handler: async (ctx, { item }) => {
@@ -33,5 +56,56 @@ export const create = mutation({
       owner: userId,
     };
     return await ctx.db.insert('inventoryItems', inventoryItem);
+  },
+});
+
+export const update = mutation({
+  args: {
+    id: v.id('inventoryItems'),
+    item: inventoryItemFields,
+  },
+  handler: async (ctx, { id, item }) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error('User must be authenticated to update inventory items');
+    }
+
+    // Verify the item belongs to the user
+    const existingItem = await ctx.db.get(id);
+    if (!existingItem) {
+      throw new Error('Inventory item not found');
+    }
+    if (existingItem.owner !== userId) {
+      throw new Error('You can only update your own inventory items');
+    }
+
+    const updatedItem = {
+      ...item,
+      owner: userId,
+    };
+    return await ctx.db.replace(id, updatedItem);
+  },
+});
+
+export const remove = mutation({
+  args: {
+    id: v.id('inventoryItems'),
+  },
+  handler: async (ctx, { id }) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error('User must be authenticated to delete inventory items');
+    }
+
+    // Verify the item belongs to the user
+    const existingItem = await ctx.db.get(id);
+    if (!existingItem) {
+      throw new Error('Inventory item not found');
+    }
+    if (existingItem.owner !== userId) {
+      throw new Error('You can only delete your own inventory items');
+    }
+
+    return await ctx.db.delete(id);
   },
 });

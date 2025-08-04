@@ -1,13 +1,21 @@
 import { useConvexQuery } from '@convex-dev/react-query';
-import type { Doc, Id } from 'convex/_generated/dataModel';
-import type { Campaign, InventoryItem } from 'convex/schema';
-import { LucideSword } from 'lucide-react';
+import type { Doc } from 'convex/_generated/dataModel';
+import type { InventoryItem } from 'convex/schema';
+import {
+  LucideBook,
+  LucideBox,
+  LucideCarrot,
+  LucideShield,
+  LucideStar,
+  LucideSword,
+} from 'lucide-react';
 import { api } from '../../../convex/_generated/api';
 import { SvgSpinners180RingWithBg } from '../icons/Spinner';
 
 interface InventoryProps {
   campaign: Doc<'campaigns'>;
   setEditedInventoryItem: (item: InventoryItem | null) => void;
+  setViewedInventoryItem: (item: Doc<'inventoryItems'> | null) => void;
 }
 
 function InventoryGridSkeleton() {
@@ -17,6 +25,27 @@ function InventoryGridSkeleton() {
       <SvgSpinners180RingWithBg className="ml-2 inline-block h-6 w-6" />
     </div>
   );
+}
+
+function InventoryItemIcon(
+  itemType: 'weapon' | 'armor' | 'consumable' | 'document' | 'quest' | 'misc'
+) {
+  switch (itemType) {
+    case 'weapon':
+      return <LucideSword className="ml-auto inline-block h-10 w-10" />;
+    case 'armor':
+      return <LucideShield className="ml-auto inline-block h-10 w-10" />;
+    case 'consumable':
+      return <LucideCarrot className="ml-auto inline-block h-10 w-10" />;
+    case 'document':
+      return <LucideBook className="ml-auto inline-block h-10 w-10" />;
+    case 'quest':
+      return <LucideStar className="ml-auto inline-block h-10 w-10" />;
+    case 'misc':
+      return <LucideBox className="ml-auto inline-block h-10 w-10" />;
+    default:
+      return <LucideBox className="ml-auto inline-block h-10 w-10" />;
+  }
 }
 
 function InventoryGrid(props: InventoryProps) {
@@ -33,23 +62,25 @@ function InventoryGrid(props: InventoryProps) {
   }
 
   return (
-    <div className="h-full w-full overflow-y-auto p-2">
-      <div className="grid grid-cols-2 gap-2 ">
+    <div className="h-0 min-h-0 w-full flex-1 overflow-y-auto p-2">
+      <div className="grid grid-cols-2 gap-2">
         {inventoryItems.map((item) => (
-          <>
-            <div
-              className="flex h-16 cursor-pointer items-center rounded-lg bg-neutral-200/60 p-3 hover:bg-neutral-200 active:bg-neutral-200/50"
-              key={item._id}
-            >
-              <div>
-                <h2 className="select-none">{item.name}</h2>
-                <h3 className="select-none text-gray-500 text-sm">
-                  {item.type}
-                </h3>
-              </div>
-              <LucideSword className="ml-auto inline-block h-10 w-10" />
+          <button
+            className="flex h-16 cursor-pointer items-center rounded-lg bg-neutral-200/60 p-3 hover:bg-neutral-200 active:bg-neutral-200/50"
+            key={item._id}
+            onClick={() => props.setViewedInventoryItem(item)}
+            type="button"
+          >
+            <div className="w-3/4 overflow-hidden">
+              <h2 className="select-none overflow-hidden text-ellipsis whitespace-nowrap text-start">
+                {item.name}
+              </h2>
+              <h3 className="w-fit select-none text-gray-500 text-sm">
+                {item.type}
+              </h3>
             </div>
-          </>
+            {InventoryItemIcon(item.type)}
+          </button>
         ))}
       </div>
     </div>
@@ -86,7 +117,7 @@ function InventoryHeader(props: InventoryProps) {
 
 export function Inventory(props: InventoryProps) {
   return (
-    <div className="h-full max-h-1/3 w-full rounded-xl bg-slate-50 shadow-md">
+    <div className="flex h-full max-h-1/3 w-full flex-col rounded-xl bg-slate-50 shadow-md">
       <InventoryHeader {...props} />
       <InventoryGrid {...props} />
     </div>

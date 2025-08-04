@@ -19,7 +19,7 @@ export const inventoryItemFields = v.object({
     v.literal('weapon'),
     v.literal('armor'),
     v.literal('consumable'),
-    v.literal('Document'),
+    v.literal('document'),
     v.literal('quest'),
     v.literal('misc')
   ),
