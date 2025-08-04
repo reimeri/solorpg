@@ -15,11 +15,17 @@ function InventoryEditForm(props: InventoryItemEditProps) {
   const [tagsInput, setTagsInput] = useState<string>(
     inventoryItem.tags.join(', ')
   );
+  const [nameError, setNameError] = useState<string>('');
 
   const handleInputChange = (
     field: keyof InventoryItem,
     value: string | number
   ) => {
+    // Clear name error when user starts typing in name field
+    if (field === 'name' && nameError) {
+      setNameError('');
+    }
+
     setModifiedItem((prev) => ({
       ...prev,
       [field]: value,
@@ -40,6 +46,13 @@ function InventoryEditForm(props: InventoryItemEditProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate name field
+    if (!modifiedItem.name || modifiedItem.name.trim() === '') {
+      setNameError('Name is required');
+      return;
+    }
+
     // Return the modified item to parent component
     setEditedInventoryItem(modifiedItem);
   };
@@ -56,13 +69,20 @@ function InventoryEditForm(props: InventoryItemEditProps) {
               Name
             </label>
             <input
-              className="h-10 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`h-10 w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 ${
+                nameError
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-blue-500'
+              }`}
               id="name"
               onChange={(e) => handleInputChange('name', e.target.value)}
               required
               type="text"
               value={modifiedItem.name}
             />
+            {nameError && (
+              <p className="mt-1 text-red-500 text-sm">{nameError}</p>
+            )}
           </div>
 
           <div className="w-full">
