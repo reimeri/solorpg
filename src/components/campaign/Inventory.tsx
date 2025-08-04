@@ -160,7 +160,7 @@ function InventoryHeader(props: InventoryProps) {
 
 export function Inventory(props: InventoryProps) {
   return (
-    <div className="flex h-full max-h-1/3 w-full flex-col rounded-xl bg-slate-50 shadow-md">
+    <div className="flex h-full max-h-1/2 w-full flex-col rounded-xl bg-slate-50 shadow-md">
       <InventoryHeader {...props} />
       <InventoryGrid {...props} />
     </div>
