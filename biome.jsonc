@@ -8,6 +8,10 @@
     "rules": {
       "nursery": {
         "useSortedClasses": "warn"
+      },
+      "correctness": {
+        "noUnusedVariables": "warn",
+        "noUnusedImports": "warn"
       }
     }
   },

@@ -22,7 +22,7 @@ export const get = query({
 });
 
 export const create = mutation({
-  args: { item: v.object(inventoryItemFields) },
+  args: { item: inventoryItemFields },
   handler: async (ctx, { item }) => {
     const userId = await getAuthUserId(ctx);
     if (!userId) {

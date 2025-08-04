@@ -1,12 +1,15 @@
 import { useConvexQuery } from '@convex-dev/react-query';
 import { createFileRoute } from '@tanstack/react-router';
+import type { InventoryItem } from 'convex/schema';
 import type { Id } from 'node_modules/convex/dist/esm-types/values/value';
-import { createContext } from 'react';
+import { createContext, useState } from 'react';
+import type { Doc } from '~/../convex/_generated/dataModel';
 import { CharacterStats } from '~/components/campaign/CharacterStats';
 import { ChatMessageInput } from '~/components/campaign/ChatMessageInput';
 import { ChatMessageWindow } from '~/components/campaign/ChatMessageWindow';
 import { Gear } from '~/components/campaign/Gear';
 import { Inventory } from '~/components/campaign/Inventory';
+import { InventoryItemEdit } from '~/components/campaign/InventoryItemEdit';
 import { Lorebook } from '~/components/campaign/Lorebook';
 import { TOP_BAR_HEIGHT } from '~/components/TopBar';
 import { api } from '../../../../convex/_generated/api';
@@ -28,6 +31,16 @@ function RouteComponent() {
   const campaign = useConvexQuery(api.campaigns.get, {
     campaignId: campaignId as Id<'campaigns'>,
   });
+  const [editedInventoryItem, setEditedInventoryItem] =
+    useState<InventoryItem | null>(null);
+
+  if (!campaign) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <p className="text-gray-500">Loading campaign...</p>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -36,9 +49,21 @@ function RouteComponent() {
     >
       <CampaignContext value={campaign ?? null}>
         <div className="my-2 flex w-full max-w-[500px] flex-col gap-4">
-          <CharacterStats />
-          <Gear />
-          <Inventory campaign={campaign} />
+          {editedInventoryItem ? (
+            <InventoryItemEdit
+              inventoryItem={editedInventoryItem}
+              setEditedInventoryItem={setEditedInventoryItem}
+            />
+          ) : (
+            <>
+              <CharacterStats />
+              <Gear />
+              <Inventory
+                campaign={campaign}
+                setEditedInventoryItem={setEditedInventoryItem}
+              />{' '}
+            </>
+          )}
         </div>
         <div className="my-2 flex w-full max-w-[1000px] flex-col gap-4">
           <ChatMessageWindow />

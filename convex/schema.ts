@@ -1,15 +1,16 @@
 import { authTables } from '@convex-dev/auth/server';
 import { defineSchema, defineTable } from 'convex/server';
-import { v } from 'convex/values';
+import { type Infer, v } from 'convex/values';
 
-export const campaignFields = {
+export const campaignFields = v.object({
   name: v.string(),
   description: v.string(),
   owner: v.id('users'),
-} as const;
+});
+export type Campaign = Infer<typeof campaignFields>;
 const campaigns = defineTable(campaignFields).index('by_owner', ['owner']);
 
-export const inventoryItemFields = {
+export const inventoryItemFields = v.object({
   name: v.string(),
   description: v.string(),
   owner: v.id('users'),
@@ -27,8 +28,8 @@ export const inventoryItemFields = {
   value: v.number(),
   damage: v.number(),
   tags: v.array(v.string()),
-} as const;
-
+});
+export type InventoryItem = Infer<typeof inventoryItemFields>;
 const inventoryItems = defineTable(inventoryItemFields).index(
   'by_owner_and_campaign',
   ['owner', 'campaignId']

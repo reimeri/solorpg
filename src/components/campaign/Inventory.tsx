@@ -1,20 +1,13 @@
 import { useConvexQuery } from '@convex-dev/react-query';
-import type { Id } from 'convex/_generated/dataModel';
+import type { Doc, Id } from 'convex/_generated/dataModel';
+import type { Campaign, InventoryItem } from 'convex/schema';
 import { LucideSword } from 'lucide-react';
 import { api } from '../../../convex/_generated/api';
 import { SvgSpinners180RingWithBg } from '../icons/Spinner';
 
 interface InventoryProps {
-  campaign:
-    | {
-        _id: Id<'campaigns'>;
-        _creationTime: number;
-        name: string;
-        owner: Id<'users'>;
-        description: string;
-      }
-    | undefined
-    | null;
+  campaign: Doc<'campaigns'>;
+  setEditedInventoryItem: (item: InventoryItem | null) => void;
 }
 
 function InventoryGridSkeleton() {
@@ -26,13 +19,13 @@ function InventoryGridSkeleton() {
   );
 }
 
-function InventoryGrid({ campaign }: { campaign: InventoryProps['campaign'] }) {
-  if (!campaign) {
+function InventoryGrid(props: InventoryProps) {
+  if (!props.campaign) {
     return <InventoryGridSkeleton />;
   }
 
   const inventoryItems = useConvexQuery(api.inventoryItems.get, {
-    campaignId: campaign._id,
+    campaignId: props.campaign._id,
   });
 
   if (!inventoryItems) {
@@ -63,12 +56,26 @@ function InventoryGrid({ campaign }: { campaign: InventoryProps['campaign'] }) {
   );
 }
 
-function InventoryHeader() {
+function InventoryHeader(props: InventoryProps) {
   return (
     <div className="mb-1 flex items-center gap-2 rounded-t-xl p-2 shadow">
       <h1 className="font-bold text-lg">Inventory</h1>
       <button
         className="ml-auto cursor-pointer rounded-lg bg-blue-500 px-2 py-1 text-white hover:bg-blue-600 active:bg-blue-700"
+        onClick={() =>
+          props.setEditedInventoryItem({
+            name: '',
+            description: '',
+            owner: props.campaign.owner,
+            campaignId: props.campaign._id,
+            type: 'misc',
+            count: 1,
+            weight: 0,
+            value: 0,
+            damage: 0,
+            tags: [],
+          })
+        }
         type="button"
       >
         Add Item
@@ -78,12 +85,10 @@ function InventoryHeader() {
 }
 
 export function Inventory(props: InventoryProps) {
-  const campaign = props.campaign;
-
   return (
     <div className="h-full max-h-1/3 w-full rounded-xl bg-slate-50 shadow-md">
-      <InventoryHeader />
-      <InventoryGrid campaign={campaign} />
+      <InventoryHeader {...props} />
+      <InventoryGrid {...props} />
     </div>
   );
 }
