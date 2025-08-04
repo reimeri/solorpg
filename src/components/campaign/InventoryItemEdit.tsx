@@ -109,7 +109,7 @@ function InventoryEditForm(props: InventoryItemEditProps) {
               <option value="weapon">Weapon</option>
               <option value="armor">Armor</option>
               <option value="consumable">Consumable</option>
-              <option value="Document">Document</option>
+              <option value="document">Document</option>
               <option value="quest">Quest</option>
               <option value="misc">Miscellaneous</option>
             </select>

@@ -3,6 +3,7 @@ import type { Doc } from 'convex/_generated/dataModel';
 import type { InventoryItem } from 'convex/schema';
 import { useState } from 'react';
 import { api } from '../../../convex/_generated/api';
+import { InventoryItemIcon } from './Inventory';
 import { InventoryItemEdit } from './InventoryItemEdit';
 
 interface InventoryItemViewProps {
@@ -25,9 +26,10 @@ function InventoryItemDetails({
         </div>
         <div className="flex-1">
           <h3 className="mb-1 block font-medium text-gray-700 text-sm">Type</h3>
-          <p className="rounded-md border bg-white p-2 capitalize shadow-sm">
-            {inventoryItem.type}
-          </p>
+          <span className="flex items-center rounded-md border bg-white p-2 shadow-sm">
+            <p className="">{inventoryItem.type}</p>
+            {InventoryItemIcon(inventoryItem.type, 1.25)}
+          </span>
         </div>
       </div>
 
@@ -197,7 +199,11 @@ export function InventoryItemView({
           <div className="text-center">
             <h2 className="font-bold text-gray-800 text-xl">Delete Item</h2>
             <p className="mt-2 text-gray-600">
-              Are you sure you want to delete "{currentItem.name}"?
+              Are you sure you want to delete "
+              {currentItem.name.length > 200
+                ? `${currentItem.name.slice(0, 200)}...`
+                : currentItem.name}
+              "?
             </p>
             <p className="mt-1 text-gray-500 text-sm">
               This action cannot be undone.

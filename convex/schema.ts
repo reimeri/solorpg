@@ -21,7 +21,7 @@ export const inventoryItemFields = v.object({
     v.literal('consumable'),
     v.literal('document'),
     v.literal('quest'),
-    v.literal('misc')
+    v.literal('miscellaneous')
   ),
   count: v.number(),
   weight: v.number(),

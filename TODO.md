@@ -7,6 +7,10 @@
 # Campaign play
 -[ ] UI
     - [ ] Inventory
+        - [x] Basic functionality
+        - [ ] Advanced functionality
+            - [ ] Equipping items
+            - [ ] Asking AI about an specific item
     - [ ] Gear
     - [ ] Chat
     - [ ] Lorebook

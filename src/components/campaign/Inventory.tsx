@@ -5,6 +5,7 @@ import {
   LucideBook,
   LucideBox,
   LucideCarrot,
+  LucideMinus,
   LucideShield,
   LucideStar,
   LucideSword,
@@ -27,24 +28,66 @@ function InventoryGridSkeleton() {
   );
 }
 
-function InventoryItemIcon(
-  itemType: 'weapon' | 'armor' | 'consumable' | 'document' | 'quest' | 'misc'
+export function InventoryItemIcon(
+  itemType:
+    | 'weapon'
+    | 'armor'
+    | 'consumable'
+    | 'document'
+    | 'quest'
+    | 'miscellaneous',
+  size = 2.5
 ) {
   switch (itemType) {
     case 'weapon':
-      return <LucideSword className="ml-auto inline-block h-10 w-10" />;
+      return (
+        <LucideSword
+          className="ml-auto inline-block"
+          style={{ height: `${size}rem`, width: `${size}rem` }}
+        />
+      );
     case 'armor':
-      return <LucideShield className="ml-auto inline-block h-10 w-10" />;
+      return (
+        <LucideShield
+          className="ml-auto inline-block"
+          style={{ height: `${size}rem`, width: `${size}rem` }}
+        />
+      );
     case 'consumable':
-      return <LucideCarrot className="ml-auto inline-block h-10 w-10" />;
+      return (
+        <LucideCarrot
+          className="ml-auto inline-block"
+          style={{ height: `${size}rem`, width: `${size}rem` }}
+        />
+      );
     case 'document':
-      return <LucideBook className="ml-auto inline-block h-10 w-10" />;
+      return (
+        <LucideBook
+          className="ml-auto inline-block"
+          style={{ height: `${size}rem`, width: `${size}rem` }}
+        />
+      );
     case 'quest':
-      return <LucideStar className="ml-auto inline-block h-10 w-10" />;
-    case 'misc':
-      return <LucideBox className="ml-auto inline-block h-10 w-10" />;
+      return (
+        <LucideStar
+          className="ml-auto inline-block"
+          style={{ height: `${size}rem`, width: `${size}rem` }}
+        />
+      );
+    case 'miscellaneous':
+      return (
+        <LucideBox
+          className="ml-auto inline-block"
+          style={{ height: `${size}rem`, width: `${size}rem` }}
+        />
+      );
     default:
-      return <LucideBox className="ml-auto inline-block h-10 w-10" />;
+      return (
+        <LucideMinus
+          className="ml-auto inline-block"
+          style={{ height: `${size}rem`, width: `${size}rem` }}
+        />
+      );
   }
 }
 
@@ -99,7 +142,7 @@ function InventoryHeader(props: InventoryProps) {
             description: '',
             owner: props.campaign.owner,
             campaignId: props.campaign._id,
-            type: 'misc',
+            type: 'miscellaneous',
             count: 1,
             weight: 0,
             value: 0,
