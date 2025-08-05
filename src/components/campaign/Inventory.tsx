@@ -5,6 +5,7 @@ import {
   LucideBook,
   LucideBox,
   LucideCarrot,
+  LucideFullscreen,
   LucideMinus,
   LucideShield,
   LucideStar,
@@ -17,6 +18,7 @@ interface InventoryProps {
   campaign: Doc<'campaigns'>;
   setEditedInventoryItem: (item: InventoryItem | null) => void;
   setViewedInventoryItem: (item: Doc<'inventoryItems'> | null) => void;
+  setExpandedInventory: (expanded: boolean) => void;
 }
 
 function InventoryGridSkeleton() {
@@ -153,6 +155,13 @@ function InventoryHeader(props: InventoryProps) {
         type="button"
       >
         Add Item
+      </button>
+      <button
+        className="size-8 cursor-pointer rounded-lg bg-neutral-200 text-white hover:bg-neutral-300 active:bg-neutral-400"
+        onClick={() => props.setExpandedInventory(true)}
+        type="button"
+      >
+        <LucideFullscreen className="inline-block stroke-neutral-800" />
       </button>
     </div>
   );

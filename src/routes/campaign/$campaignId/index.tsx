@@ -7,6 +7,7 @@ import type { Doc } from '~/../convex/_generated/dataModel';
 import { CharacterStats } from '~/components/campaign/CharacterStats';
 import { ChatMessageInput } from '~/components/campaign/ChatMessageInput';
 import { ChatMessageWindow } from '~/components/campaign/ChatMessageWindow';
+import { ExpandedInventory } from '~/components/campaign/ExpandedInventory';
 import { Gear } from '~/components/campaign/Gear';
 import { Inventory } from '~/components/campaign/Inventory';
 import { InventoryItemEdit } from '~/components/campaign/InventoryItemEdit';
@@ -36,6 +37,7 @@ function RouteComponent() {
     useState<InventoryItem | null>(null);
   const [viewedInventoryItem, setViewedInventoryItem] =
     useState<Doc<'inventoryItems'> | null>(null);
+  const [expandedInventory, setExpandedInventory] = useState(false);
 
   if (!campaign) {
     return (
@@ -46,7 +48,9 @@ function RouteComponent() {
   }
 
   const showMainContent =
-    editedInventoryItem === null && viewedInventoryItem === null;
+    editedInventoryItem === null &&
+    viewedInventoryItem === null &&
+    !expandedInventory;
 
   return (
     <div
@@ -67,6 +71,14 @@ function RouteComponent() {
               setViewedInventoryItem={setViewedInventoryItem}
             />
           )}
+          {expandedInventory && (
+            <ExpandedInventory
+              campaign={campaign}
+              setEditedInventoryItem={setEditedInventoryItem}
+              setExpandedInventory={setExpandedInventory}
+              setViewedInventoryItem={setViewedInventoryItem}
+            />
+          )}
           {showMainContent && (
             <>
               <CharacterStats />
@@ -74,6 +86,7 @@ function RouteComponent() {
               <Inventory
                 campaign={campaign}
                 setEditedInventoryItem={setEditedInventoryItem}
+                setExpandedInventory={setExpandedInventory}
                 setViewedInventoryItem={setViewedInventoryItem}
               />
             </>
