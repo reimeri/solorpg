@@ -81,7 +81,7 @@ function RouteComponent() {
           )}
           {showMainContent && (
             <>
-              <CharacterStats />
+              <CharacterStats campaignId={campaign._id} />
               <Gear />
               <Inventory
                 campaign={campaign}

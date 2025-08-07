@@ -2,6 +2,9 @@ import { authTables } from '@convex-dev/auth/server';
 import { defineSchema, defineTable } from 'convex/server';
 import { type Infer, v } from 'convex/values';
 
+/////////////////////////
+// Campaign
+/////////////////////////
 export const campaignFields = v.object({
   name: v.string(),
   description: v.string(),
@@ -10,6 +13,9 @@ export const campaignFields = v.object({
 export type Campaign = Infer<typeof campaignFields>;
 const campaigns = defineTable(campaignFields).index('by_owner', ['owner']);
 
+/////////////////////////
+// Inventory
+/////////////////////////
 export const inventoryItemFields = v.object({
   name: v.string(),
   description: v.string(),
@@ -35,6 +41,33 @@ const inventoryItems = defineTable(inventoryItemFields).index(
   ['owner', 'campaignId']
 );
 
+/////////////////////////
+// Character
+/////////////////////////
+export const characterFields = v.object({
+  name: v.string(),
+  description: v.string(),
+  race: v.string(),
+  owner: v.id('users'),
+  campaignId: v.id('campaigns'),
+  level: v.number(),
+  stats: v.object({
+    strength: v.number(),
+    agility: v.number(),
+    constitution: v.number(),
+    mind: v.number(),
+    charisma: v.number(),
+  }),
+  equippedItems: v.array(
+    v.object({ itemId: v.id('inventoryItems'), slot: v.string() })
+  ),
+});
+export type Character = Infer<typeof characterFields>;
+const characters = defineTable(characterFields).index('by_owner_and_campaign', [
+  'owner',
+  'campaignId',
+]);
+
 export default defineSchema({
   ...authTables,
   tasks: defineTable({
@@ -44,4 +77,5 @@ export default defineSchema({
   }).index('by_owner', ['owner']),
   inventoryItems,
   campaigns,
+  characters,
 });

@@ -15,6 +15,7 @@ import type {
 } from "convex/server";
 import type * as auth from "../auth.js";
 import type * as campaigns from "../campaigns.js";
+import type * as characters from "../characters.js";
 import type * as http from "../http.js";
 import type * as inventoryItems from "../inventoryItems.js";
 import type * as tasks from "../tasks.js";
@@ -31,6 +32,7 @@ import type * as users from "../users.js";
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   campaigns: typeof campaigns;
+  characters: typeof characters;
   http: typeof http;
   inventoryItems: typeof inventoryItems;
   tasks: typeof tasks;
