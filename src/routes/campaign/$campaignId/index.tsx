@@ -38,6 +38,9 @@ function RouteComponent() {
   const [viewedInventoryItem, setViewedInventoryItem] =
     useState<Doc<'inventoryItems'> | null>(null);
   const [expandedInventory, setExpandedInventory] = useState(false);
+  const [inventorySelectionFunction, setInventorySelectionFunction] = useState<
+    ((item: Doc<'inventoryItems'>) => void) | undefined
+  >(undefined);
 
   if (!campaign) {
     return (
@@ -74,6 +77,7 @@ function RouteComponent() {
           {expandedInventory && (
             <ExpandedInventory
               campaign={campaign}
+              inventorySelectionFunction={inventorySelectionFunction}
               setEditedInventoryItem={setEditedInventoryItem}
               setExpandedInventory={setExpandedInventory}
               setViewedInventoryItem={setViewedInventoryItem}
@@ -82,7 +86,11 @@ function RouteComponent() {
           {showMainContent && (
             <>
               <CharacterStats campaignId={campaign._id} />
-              <Gear />
+              <Gear
+                campaignId={campaign._id}
+                setExpandedInventory={setExpandedInventory}
+                setInventorySelectionFunction={setInventorySelectionFunction}
+              />
               <Inventory
                 campaign={campaign}
                 setEditedInventoryItem={setEditedInventoryItem}

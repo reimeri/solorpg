@@ -21,6 +21,9 @@ interface ExpandedInventoryProps {
   setEditedInventoryItem: (item: InventoryItem | null) => void;
   setViewedInventoryItem: (item: Doc<'inventoryItems'> | null) => void;
   setExpandedInventory: (expanded: boolean) => void;
+  inventorySelectionFunction:
+    | ((item: Doc<'inventoryItems'>) => void)
+    | undefined;
 }
 
 function InventoryGridSkeleton() {
@@ -34,6 +37,7 @@ function InventoryGridSkeleton() {
 
 function ExpandedInventoryGrid({
   inventoryItems,
+  inventorySelectionFunction,
   ...props
 }: { inventoryItems: Doc<'inventoryItems'>[] } & ExpandedInventoryProps) {
   return (
@@ -43,7 +47,14 @@ function ExpandedInventoryGrid({
           <button
             className="flex h-16 cursor-pointer items-center rounded-lg bg-neutral-200/60 p-3 hover:bg-neutral-200 active:bg-neutral-200/50"
             key={item._id}
-            onClick={() => props.setViewedInventoryItem(item)}
+            onClick={() =>
+              inventorySelectionFunction !== undefined
+                ? (() => {
+                    inventorySelectionFunction(item);
+                    props.setExpandedInventory(false);
+                  })()
+                : props.setViewedInventoryItem(item)
+            }
             type="button"
           >
             <div className="w-3/4 overflow-hidden">
@@ -295,6 +306,7 @@ export function ExpandedInventory(props: ExpandedInventoryProps) {
 
   return (
     <div className="flex h-full w-full flex-col rounded-xl bg-slate-50 shadow-lg">
+      {props.inventorySelectionFunction !== undefined && <p>Select an item:</p>}
       <InventoryHeader
         filterMode={filterMode}
         inventoryItems={inventoryItems}
@@ -307,6 +319,7 @@ export function ExpandedInventory(props: ExpandedInventoryProps) {
       <ExpandedInventoryGrid
         campaign={props.campaign}
         inventoryItems={filteredItems}
+        inventorySelectionFunction={props.inventorySelectionFunction}
         setEditedInventoryItem={props.setEditedInventoryItem}
         setExpandedInventory={props.setExpandedInventory}
         setViewedInventoryItem={props.setViewedInventoryItem}

@@ -58,8 +58,12 @@ export const characterFields = v.object({
     mind: v.number(),
     charisma: v.number(),
   }),
-  equippedItems: v.array(
-    v.object({ itemId: v.id('inventoryItems'), slot: v.string() })
+  equipmentSlots: v.array(
+    v.object({
+      name: v.string(),
+      equippedItemId: v.optional(v.id('inventoryItems')),
+      enabled: v.boolean(),
+    })
   ),
 });
 export type Character = Infer<typeof characterFields>;
