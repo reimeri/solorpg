@@ -80,6 +80,7 @@ function RouteComponent() {
               inventorySelectionFunction={inventorySelectionFunction}
               setEditedInventoryItem={setEditedInventoryItem}
               setExpandedInventory={setExpandedInventory}
+              setInventorySelectionFunction={setInventorySelectionFunction}
               setViewedInventoryItem={setViewedInventoryItem}
             />
           )}

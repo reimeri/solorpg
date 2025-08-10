@@ -24,6 +24,9 @@ interface ExpandedInventoryProps {
   inventorySelectionFunction:
     | ((item: Doc<'inventoryItems'>) => void)
     | undefined;
+  setInventorySelectionFunction: (
+    func: ((item: Doc<'inventoryItems'>) => void) | undefined
+  ) => void;
 }
 
 function InventoryGridSkeleton() {
@@ -211,6 +214,7 @@ function InventoryHeader({
   setFilterMode,
   searchString,
   setSearchString,
+  setInventorySelectionFunction,
   ...props
 }: {
   setFilteredItems: (items: Doc<'inventoryItems'>[]) => void;
@@ -256,7 +260,10 @@ function InventoryHeader({
         />
         <button
           className="flex size-8 cursor-pointer items-center justify-center rounded-lg bg-neutral-300 text-white hover:bg-red-400"
-          onClick={() => props.setExpandedInventory(false)}
+          onClick={() => {
+            props.setExpandedInventory(false);
+            setInventorySelectionFunction(undefined);
+          }}
           type="button"
         >
           <LucideX className="inline-block size-4" />
@@ -306,7 +313,9 @@ export function ExpandedInventory(props: ExpandedInventoryProps) {
 
   return (
     <div className="flex h-full w-full flex-col rounded-xl bg-slate-50 shadow-lg">
-      {props.inventorySelectionFunction !== undefined && <p>Select an item:</p>}
+      {props.inventorySelectionFunction !== undefined && (
+        <p className="p-2 text-center font-bold text-2xl">Select an item</p>
+      )}
       <InventoryHeader
         filterMode={filterMode}
         inventoryItems={inventoryItems}
@@ -322,6 +331,7 @@ export function ExpandedInventory(props: ExpandedInventoryProps) {
         inventorySelectionFunction={props.inventorySelectionFunction}
         setEditedInventoryItem={props.setEditedInventoryItem}
         setExpandedInventory={props.setExpandedInventory}
+        setInventorySelectionFunction={props.setInventorySelectionFunction}
         setViewedInventoryItem={props.setViewedInventoryItem}
       />
     </div>

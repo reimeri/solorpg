@@ -37,7 +37,7 @@ export function GearSlot(props: GearSlotProps) {
   return (
     <button
       className={`z-10 flex select-none flex-col items-center justify-center rounded-lg bg-neutral-200 p-2 text-center ${
-        slot.enabled ? 'cursor-pointer hover:bg-neutral-300' : 'opacity-50'
+        slot.enabled ? 'cursor-pointer hover:bg-neutral-300' : 'opacity-20'
       }`}
       onClick={
         slot.enabled
@@ -49,6 +49,7 @@ export function GearSlot(props: GearSlotProps) {
                     slotName: slot.name,
                     itemId: i._id,
                   });
+                  setInventorySelectionFunction(undefined);
                 }
               );
               setExpandedInventory(true);
@@ -62,7 +63,9 @@ export function GearSlot(props: GearSlotProps) {
           {item?.name || 'Loading...'}
         </span>
       )}
-      <span className="font-semibold text-sm">{slot.name}</span>
+      <span className="font-semibold text-sm">
+        {slot.name !== 'air' ? slot.name : ''}
+      </span>
     </button>
   );
 }
