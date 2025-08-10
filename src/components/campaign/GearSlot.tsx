@@ -29,12 +29,10 @@ export function GearSlot(props: GearSlotProps) {
     return <div className="text-gray-500">Loading...</div>;
   }
 
-  const item =
-    !slot.equippedItemId === true
-      ? undefined
-      : useConvexQuery(api.inventoryItems.getById, {
-          id: slot.equippedItemId,
-        });
+  const item = useConvexQuery(
+    api.inventoryItems.getById,
+    slot.equippedItemId ? { id: slot.equippedItemId } : 'skip'
+  );
 
   return (
     <button
