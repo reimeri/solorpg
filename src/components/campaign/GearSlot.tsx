@@ -16,6 +16,10 @@ interface GearSlotProps {
   ) => void;
 }
 
+function formatItemName(name: string): string {
+  return name.length > 35 ? `${name.slice(0, 35)}...` : name;
+}
+
 export function GearSlot(props: GearSlotProps) {
   const {
     slot,
@@ -58,12 +62,10 @@ export function GearSlot(props: GearSlotProps) {
       }
       type="button"
     >
-      {slot.equippedItemId && (
-        <span className="my-auto overflow-hidden text-ellipsis text-gray-600 text-xs">
-          {item?.name || 'Loading...'}
-        </span>
-      )}
-      <span className="font-semibold text-sm">
+      <span className="my-auto overflow-hidden text-ellipsis font-semibold text-xs">
+        {item ? formatItemName(item.name) : ''}
+      </span>
+      <span className="text-neutral-500 text-xs">
         {slot.name !== 'air' ? slot.name : ''}
       </span>
     </button>
