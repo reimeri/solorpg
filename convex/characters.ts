@@ -66,9 +66,22 @@ export const setEquippedItem = mutation({
       throw new Error('Character not found or access denied.');
     }
 
-    const updatedSlots = character.equipmentSlots.map((slot) =>
-      slot.name === slotName ? { ...slot, equippedItemId: itemId } : slot
-    );
+    const updatedSlots = character.equipmentSlots.map((slot) => {
+      // Remove item if already equipped
+      if (slot.name === slotName && slot.equippedItemId === itemId) {
+        return { ...slot, equippedItemId: undefined };
+      }
+      if (slot.name === slotName) {
+        // If this is the target slot, equip the item
+        return { ...slot, equippedItemId: itemId };
+      }
+      if (slot.equippedItemId === itemId) {
+        // If this slot has the same item equipped, remove it
+        return { ...slot, equippedItemId: undefined };
+      }
+      // Otherwise, leave the slot unchanged
+      return slot;
+    });
 
     return await ctx.db.patch(characterId, {
       equipmentSlots: updatedSlots,
