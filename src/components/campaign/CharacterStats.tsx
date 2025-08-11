@@ -8,6 +8,103 @@ interface CharacterStatsProps {
   campaignId: string;
 }
 
+function StatCard({
+  name,
+  value,
+  setValue,
+  isEditing,
+}: {
+  name: string;
+  value: number;
+  setValue: React.Dispatch<React.SetStateAction<number>>;
+  isEditing: boolean;
+}) {
+  return (
+    <span className="flex-1 rounded-lg bg-neutral-200">
+      <p className="mt-1 font-bold text-sm">{name}</p>
+      {isEditing ? (
+        <input
+          className="w-[80px] py-1 text-sm [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          onChange={(e) => setValue(Number(e.target.value))}
+          type="number"
+          value={value}
+        />
+      ) : (
+        <p className="py-1 text-sm">{value}</p>
+      )}
+    </span>
+  );
+}
+
+function NameElement({
+  value,
+  setValue,
+  isEditing,
+}: {
+  value: string;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
+  isEditing: boolean;
+}) {
+  return isEditing ? (
+    <input
+      className="w-[150px] rounded font-bold text-xl [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+      onChange={(e) => setValue(e.target.value)}
+      type="text"
+      value={value}
+    />
+  ) : (
+    <h1 className="font-bold text-xl">{value}</h1>
+  );
+}
+
+function LevelElement({
+  value,
+  setValue,
+  isEditing,
+}: {
+  value: number;
+  setValue: React.Dispatch<React.SetStateAction<number>>;
+  isEditing: boolean;
+}) {
+  return isEditing ? (
+    <div className="flex items-center gap-2">
+      <p>Lvl: </p>
+      <input
+        className="w-[80px] [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+        onChange={(e) => setValue(Number(e.target.value))}
+        type="number"
+        value={value}
+      />
+    </div>
+  ) : (
+    <p>Lvl: {value}</p>
+  );
+}
+
+function RaceElement({
+  value,
+  setValue,
+  isEditing,
+}: {
+  value: string;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
+  isEditing: boolean;
+}) {
+  return isEditing ? (
+    <div className="flex items-center gap-2">
+      <p>Race: </p>
+      <input
+        className="w-[98px] rounded"
+        onChange={(e) => setValue(e.target.value)}
+        type="text"
+        value={value}
+      />
+    </div>
+  ) : (
+    <p className="ml-auto">Race: {value}</p>
+  );
+}
+
 export function CharacterStats({ campaignId }: CharacterStatsProps) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -46,42 +143,21 @@ export function CharacterStats({ campaignId }: CharacterStatsProps) {
       {character ? (
         <div className="flex w-full flex-col gap-2">
           <div className="mb-2 flex w-full items-center gap-4">
-            {isEditing ? (
-              <input
-                className="w-[150px] rounded font-bold text-xl [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                onChange={(e) => setName(e.target.value)}
-                type="text"
-                value={name}
-              />
-            ) : (
-              <h1 className="font-bold text-xl">{character.name}</h1>
-            )}
-            {isEditing ? (
-              <div className="flex items-center gap-2">
-                <p>Lvl: </p>
-                <input
-                  className="w-[80px] [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                  onChange={(e) => setLevel(Number(e.target.value))}
-                  type="number"
-                  value={level}
-                />
-              </div>
-            ) : (
-              <p>Lvl: {character.level}</p>
-            )}
-            {isEditing ? (
-              <div className="flex items-center gap-2">
-                <p>Race: </p>
-                <input
-                  className="w-[98px] rounded"
-                  onChange={(e) => setRace(e.target.value)}
-                  type="text"
-                  value={race}
-                />
-              </div>
-            ) : (
-              <p className="ml-auto">Race: {race}</p>
-            )}
+            <NameElement
+              isEditing={isEditing}
+              setValue={setName}
+              value={name}
+            />
+            <LevelElement
+              isEditing={isEditing}
+              setValue={setLevel}
+              value={level}
+            />
+            <RaceElement
+              isEditing={isEditing}
+              setValue={setRace}
+              value={race}
+            />
             <button
               className="cursor-pointer rounded-lg bg-neutral-200 p-1 hover:bg-blue-200 active:bg-blue-300"
               onClick={() => {
@@ -117,71 +193,36 @@ export function CharacterStats({ campaignId }: CharacterStatsProps) {
             </button>
           </div>
           <div className="flex flex-wrap gap-2 text-center">
-            <span className="flex-1 rounded-lg bg-neutral-200">
-              <p className="mt-1 font-bold text-sm">STR</p>
-              {isEditing ? (
-                <input
-                  className="w-[80px] [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                  onChange={(e) => setStrength(Number(e.target.value))}
-                  type="number"
-                  value={strength}
-                />
-              ) : (
-                <p>{strength}</p>
-              )}
-            </span>
-            <span className="flex-1 rounded-lg bg-neutral-200">
-              <p className="mt-1 font-bold text-sm">AGI</p>
-              {isEditing ? (
-                <input
-                  className="w-[80px] [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                  onChange={(e) => setAgility(Number(e.target.value))}
-                  type="number"
-                  value={agility}
-                />
-              ) : (
-                <p>{agility}</p>
-              )}
-            </span>
-            <span className="flex-1 rounded-lg bg-neutral-200">
-              <p className="mt-1 font-bold text-sm">MND</p>
-              {isEditing ? (
-                <input
-                  className="w-[80px] [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                  onChange={(e) => setMind(Number(e.target.value))}
-                  type="number"
-                  value={mind}
-                />
-              ) : (
-                <p>{mind}</p>
-              )}
-            </span>
-            <span className="flex-1 rounded-lg bg-neutral-200">
-              <p className="mt-1 font-bold text-sm">CON</p>
-              {isEditing ? (
-                <input
-                  className="w-[80px] [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                  onChange={(e) => setConstitution(Number(e.target.value))}
-                  type="number"
-                  value={constitution}
-                />
-              ) : (
-                <p>{constitution}</p>
-              )}
-            </span>
-            <span className="flex-1 rounded-lg bg-neutral-200">
-              <p className="mt-1 font-bold text-sm">CHA</p>
-              {isEditing ? (
-                <input
-                  className="w-[80px] [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                  onChange={(e) => setCharisma(Number(e.target.value))}
-                  type="number"
-                  value={charisma}
-                />
-              ) : (
-                <p>{charisma}</p>
-              )}
-            </span>
+            <StatCard
+              isEditing={isEditing}
+              name="STR"
+              setValue={setStrength}
+              value={strength}
+            />
+            <StatCard
+              isEditing={isEditing}
+              name="AGI"
+              setValue={setAgility}
+              value={agility}
+            />
+            <StatCard
+              isEditing={isEditing}
+              name="MND"
+              setValue={setMind}
+              value={mind}
+            />
+            <StatCard
+              isEditing={isEditing}
+              name="CON"
+              setValue={setConstitution}
+              value={constitution}
+            />
+            <StatCard
+              isEditing={isEditing}
+              name="CHA"
+              setValue={setCharisma}
+              value={charisma}
+            />
           </div>
         </div>
       ) : (
