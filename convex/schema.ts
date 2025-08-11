@@ -72,6 +72,22 @@ const characters = defineTable(characterFields).index('by_owner_and_campaign', [
   'campaignId',
 ]);
 
+// Messages table for chat
+const messages = defineTable({
+  role: v.union(
+    v.literal('user'),
+    v.literal('assistant'),
+    v.literal('system')
+  ),
+  content: v.string(),
+  timestamp: v.number(),
+  campaignId: v.optional(v.id('campaigns')),
+  characterId: v.optional(v.id('characters')),
+  userId: v.id('users'),
+})
+  .index('by_campaign', ['campaignId'])
+  .index('by_user', ['userId']);
+
 export default defineSchema({
   ...authTables,
   tasks: defineTable({
@@ -82,4 +98,5 @@ export default defineSchema({
   inventoryItems,
   campaigns,
   characters,
+  messages,
 });

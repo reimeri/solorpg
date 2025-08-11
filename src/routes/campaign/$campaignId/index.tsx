@@ -33,6 +33,9 @@ function RouteComponent() {
   const campaign = useConvexQuery(api.campaigns.get, {
     campaignId: campaignId as Id<'campaigns'>,
   });
+  const character = useConvexQuery(api.characters.get, {
+    campaignId: campaignId as Id<'campaigns'>,
+  });
   const [editedInventoryItem, setEditedInventoryItem] =
     useState<InventoryItem | null>(null);
   const [viewedInventoryItem, setViewedInventoryItem] =
@@ -42,10 +45,10 @@ function RouteComponent() {
     ((item: Doc<'inventoryItems'>) => void) | undefined
   >(undefined);
 
-  if (!campaign) {
+  if (!(campaign && character)) {
     return (
       <div className="flex h-full w-full items-center justify-center">
-        <p className="text-gray-500">Loading campaign...</p>
+        <p className="text-gray-500">Loading...</p>
       </div>
     );
   }
@@ -103,7 +106,7 @@ function RouteComponent() {
         </div>
         <div className="my-2 flex w-full max-w-[1000px] flex-col gap-4">
           <ChatMessageWindow />
-          <ChatMessageInput />
+          <ChatMessageInput characterId={character._id} />
         </div>
         <div className="my-2 flex w-full max-w-[500px] flex-col">
           <Lorebook />
