@@ -1,8 +1,8 @@
 import type { MessageContent } from '@langchain/core/messages';
 import { ChatOpenAI } from '@langchain/openai';
 import { v } from 'convex/values';
-import { api, internal } from './_generated/api';
-import type { DataModel, Id } from './_generated/dataModel';
+import { api } from './_generated/api';
+import type { Id } from './_generated/dataModel';
 import { internalAction } from './_generated/server';
 
 export const generateResponse = internalAction({
