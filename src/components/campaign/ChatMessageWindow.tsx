@@ -1,5 +1,6 @@
 import { useParams } from '@tanstack/react-router';
 import { useQuery } from 'convex/react';
+import { useEffect } from 'react';
 import { api } from '~/../convex/_generated/api';
 import type { Id } from '~/../convex/_generated/dataModel';
 
@@ -16,6 +17,12 @@ export function ChatMessageWindow() {
   const messages = useQuery(api.chat.list, { campaignId }) as
     | Message[]
     | undefined;
+  let sortedMessages = messages?.sort((a, b) => a.timestamp - b.timestamp);
+  useEffect(() => {
+    if (messages) {
+      sortedMessages = messages.sort((a, b) => a.timestamp - b.timestamp);
+    }
+  }, [messages]);
 
   if (!messages) {
     return (
@@ -37,7 +44,7 @@ export function ChatMessageWindow() {
 
   return (
     <div className="flex h-full w-full flex-col gap-2 overflow-y-auto rounded-xl bg-slate-50 p-4 shadow-md">
-      {messages.map((message) => (
+      {sortedMessages?.map((message) => (
         <div
           className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           key={message._id}

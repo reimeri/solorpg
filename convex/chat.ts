@@ -6,6 +6,7 @@ import { mutation, query } from './_generated/server';
 export const send = mutation({
   args: {
     content: v.string(),
+    additionalInfo: v.string(),
     campaignId: v.id('campaigns'),
     characterId: v.id('characters'),
   },
@@ -40,6 +41,7 @@ export const send = mutation({
     // Call AI service to get response
     await ctx.scheduler.runAfter(0, internal.ai.generateResponse, {
       messageId: userMessageId,
+      additionalInfo: args.additionalInfo,
       contextMessages: recentMessagesSlice.map((msg) => ({
         role: msg.role,
         content: msg.content,

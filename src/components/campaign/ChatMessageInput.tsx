@@ -1,8 +1,39 @@
+import { useConvexQuery } from '@convex-dev/react-query';
 import { useParams } from '@tanstack/react-router';
 import { useMutation } from 'convex/react';
+import type { Character, InventoryItem } from 'convex/schema';
 import { useState } from 'react';
 import { api } from '~/../convex/_generated/api';
 import type { Id } from '~/../convex/_generated/dataModel';
+
+function generateGearAndInventoryInfoTo(
+  character: Character & { _id: Id<'characters'>; _creationTime: number },
+  inventory: (InventoryItem & {
+    _id: Id<'inventoryItems'>;
+    _creationTime: number;
+  })[]
+) {
+  const gear = character?.equipmentSlots
+    .filter((slot) => slot.enabled && slot.equippedItemId)
+    .map((slot) => {
+      const item = inventory?.find((i) => i._id === slot.equippedItemId);
+      const { _creationTime, ...timelessItem } = item || {};
+      return {
+        name: slot.name,
+        equippedItemId: slot.equippedItemId,
+        item: timelessItem,
+      };
+    });
+
+  const items = inventory?.map((item) => {
+    const { _creationTime, ...timelessItem } = item;
+    return timelessItem;
+  });
+
+  const name = character?.name;
+
+  return `## Additional information:\nUse this information if it is relevant to the conversation or actions happening.\n${name} is wearing: ${JSON.stringify(gear || [])}\n${name} has following items in their inventory: ${JSON.stringify(items || [])}`;
+}
 
 export function ChatMessageInput({
   characterId,
@@ -13,10 +44,16 @@ export function ChatMessageInput({
   const { campaignId: rawCampaignId } = useParams({
     strict: false,
   });
-  const campaignId = rawCampaignId as Id<'campaigns'> | undefined;
+  const campaignId = rawCampaignId as Id<'campaigns'>;
   const sendMessage = useMutation(api.chat.send);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const character = useConvexQuery(api.characters.get, {
+    campaignId,
+  });
+  const inventory = useConvexQuery(api.inventoryItems.get, {
+    campaignId,
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,11 +66,19 @@ export function ChatMessageInput({
       return;
     }
 
+    if (!(character && inventory)) {
+      setError('Character or inventory data not loaded');
+      return;
+    }
+
+    const additionalInfo = generateGearAndInventoryInfoTo(character, inventory);
+
     try {
       setError(null);
       setIsSending(true);
       await sendMessage({
         content: message,
+        additionalInfo,
         campaignId,
         characterId,
       });

@@ -8,6 +8,7 @@ import { internalAction } from './_generated/server';
 export const generateResponse = internalAction({
   args: {
     messageId: v.id('messages'),
+    additionalInfo: v.string(),
     contextMessages: v.array(
       v.object({
         role: v.union(
@@ -21,10 +22,9 @@ export const generateResponse = internalAction({
   },
   handler: async (ctx, args) => {
     // Get the message with proper type annotation
-    const message: DataModel['messages']['document'] | null =
-      await ctx.runQuery(api.messages.get, {
-        id: args.messageId,
-      });
+    const message = await ctx.runQuery(api.messages.get, {
+      id: args.messageId,
+    });
 
     if (!message) {
       throw new Error('Message not found');
@@ -36,8 +36,8 @@ export const generateResponse = internalAction({
       configuration: {
         baseURL: process.env.LITELLM_API_URL,
       },
-      modelName: 'gpt-5-mini',
-      temperature: 0.7,
+      modelName: 'deepseek-v3-0324',
+      temperature: 1,
     });
 
     try {
@@ -49,20 +49,25 @@ export const generateResponse = internalAction({
         return { role: msg.role, content: msg.content };
       });
 
+      // Add system message to the end of the context
+      formattedMessages.push({
+        role: 'system',
+        content: `You are a dungeon master for a solo RPG campaign.\n\nONLY use the following information if it is relevant to the conversation or actions happening.\n${args.additionalInfo}`,
+      });
+
       // Get AI response
-      const response = await model.invoke(formattedMessages);
+      const response = await model.invoke(formattedMessages.reverse());
       const aiResponse = response.content;
 
       // Store the AI response
-      const responseId: DataModel['messages']['document']['_id'] | null =
-        await ctx.runMutation(api.messages.insert, {
-          role: 'assistant',
-          content: aiResponse.toString(),
-          timestamp: Date.now(),
-          campaignId: message.campaignId,
-          characterId: message.characterId,
-          userId: message.userId as Id<'users'>,
-        });
+      const responseId = await ctx.runMutation(api.messages.insert, {
+        role: 'assistant',
+        content: aiResponse.toString(),
+        timestamp: Date.now(),
+        campaignId: message.campaignId,
+        characterId: message.characterId,
+        userId: message.userId as Id<'users'>,
+      });
 
       const value: { id: Id<'messages'> | null; content: MessageContent } = {
         id: responseId,
