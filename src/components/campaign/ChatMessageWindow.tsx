@@ -1,7 +1,7 @@
 import { useParams } from '@tanstack/react-router';
 import { useMutation, useQuery } from 'convex/react';
 import { LucideEdit, LucideTrash } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { api } from '~/../convex/_generated/api';
 import type { Id } from '~/../convex/_generated/dataModel';
 
@@ -19,6 +19,7 @@ export function ChatMessageWindow() {
   const messages = useQuery(api.chat.list, { campaignId }) as
     | Message[]
     | undefined;
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const deleteMessage = useMutation(api.messages.deleteMessage);
   const updateMessage = useMutation(api.messages.updateMessage);
 
@@ -29,8 +30,15 @@ export function ChatMessageWindow() {
   useEffect(() => {
     if (messages) {
       sortedMessages = messages.sort((a, b) => a.timestamp - b.timestamp);
+      // Scroll to bottom when messages change
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
+
+  // Scroll to bottom on initial load
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView();
+  }, []);
 
   if (!messages) {
     return (
@@ -54,8 +62,9 @@ export function ChatMessageWindow() {
     <div className="flex h-full w-full flex-col gap-2 overflow-y-auto rounded-xl bg-slate-50 p-4 shadow-md">
       {sortedMessages?.map((message) => (
         <div
-          className={`group relative flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           key={message._id}
+          className={`group relative flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+          ref={sortedMessages && message._id === sortedMessages.at(-1)?._id ? messagesEndRef : undefined}
         >
           <div
             className={`group/message relative max-w-3/4 rounded-lg p-3 ${
@@ -185,6 +194,7 @@ export function ChatMessageWindow() {
           </div>
         </div>
       ))}
+      <div ref={messagesEndRef} />
     </div>
   );
 }
