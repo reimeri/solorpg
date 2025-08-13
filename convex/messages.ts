@@ -1,5 +1,6 @@
 import { v } from 'convex/values';
 import { mutation, query } from './_generated/server';
+import { Id } from './_generated/dataModel';
 
 export const get = query({
   args: { id: v.id('messages') },
@@ -30,5 +31,43 @@ export const insert = mutation({
       characterId: args.characterId,
       userId: args.userId,
     });
+  },
+});
+
+export const deleteMessage = mutation({
+  args: { 
+    id: v.id('messages') 
+  },
+  handler: async (ctx, args) => {
+    // Check if message exists
+    const message = await ctx.db.get(args.id);
+    if (!message) {
+      throw new Error('Message not found');
+    }
+    
+    // Delete the message
+    await ctx.db.delete(args.id);
+    return { success: true };
+  },
+});
+
+export const updateMessage = mutation({
+  args: { 
+    id: v.id('messages'),
+    content: v.string() 
+  },
+  handler: async (ctx, args) => {
+    // Check if message exists
+    const message = await ctx.db.get(args.id);
+    if (!message) {
+      throw new Error('Message not found');
+    }
+    
+    // Update the message content
+    await ctx.db.patch(args.id, { 
+      content: args.content,
+    });
+    
+    return { success: true };
   },
 });
