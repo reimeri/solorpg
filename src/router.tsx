@@ -4,14 +4,17 @@ import { QueryClient } from '@tanstack/react-query';
 import { createRouter as createTanStackRouter } from '@tanstack/react-router';
 import { routerWithQueryClient } from '@tanstack/react-router-with-query';
 import { routeTree } from './routeTree.gen';
+import { createLogger } from './lib/logger';
 
 export function createRouter() {
   // biome-ignore lint/style/noNonNullAssertion: This is checked at runtime
   // biome-ignore lint/suspicious/noExplicitAny: import.meta.env is typed as any
   const CONVEX_URL = (import.meta as any).env.VITE_CONVEX_URL!;
+  const logger = createLogger('router');
+  
   if (!CONVEX_URL) {
-    // biome-ignore lint/suspicious/noConsole: Just to report the error
-    console.error('missing envar VITE_CONVEX_URL');
+    logger.fatal({ env: import.meta.env }, 'Missing required environment variable VITE_CONVEX_URL');
+    throw new Error('Missing required environment variable VITE_CONVEX_URL');
   }
   const convexQueryClient = new ConvexQueryClient(CONVEX_URL);
 

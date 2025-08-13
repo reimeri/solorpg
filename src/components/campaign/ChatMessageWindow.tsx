@@ -4,6 +4,7 @@ import { LucideEdit, LucideTrash } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { api } from '~/../convex/_generated/api';
 import type { Id } from '~/../convex/_generated/dataModel';
+import { createLogger } from '~/lib/logger';
 
 type Message = {
   _id: Id<'messages'>;
@@ -24,8 +25,9 @@ export function ChatMessageWindow() {
   const updateMessage = useMutation(api.messages.updateMessage);
 
   // State for editing
-  const [editingId, setEditingId] = useState<Id<'messages'> | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState('');
+  const logger = createLogger('ChatMessageWindow');
   let sortedMessages = messages?.sort((a, b) => a.timestamp - b.timestamp);
   useEffect(() => {
     if (messages) {
@@ -62,9 +64,13 @@ export function ChatMessageWindow() {
     <div className="flex h-full w-full flex-col gap-2 overflow-y-auto rounded-xl bg-slate-50 p-4 shadow-md">
       {sortedMessages?.map((message) => (
         <div
-          key={message._id}
           className={`group relative flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-          ref={sortedMessages && message._id === sortedMessages.at(-1)?._id ? messagesEndRef : undefined}
+          key={message._id}
+          ref={
+            sortedMessages && message._id === sortedMessages.at(-1)?._id
+              ? messagesEndRef
+              : undefined
+          }
         >
           <div
             className={`group/message relative max-w-3/4 rounded-lg p-3 ${
@@ -76,7 +82,7 @@ export function ChatMessageWindow() {
             {editingId === message._id ? (
               <div className="flex w-full flex-col gap-2">
                 <div className="relative w-full">
-                  <div 
+                  <div
                     className="invisible whitespace-pre-wrap break-words p-2"
                     style={{
                       minHeight: '60px',
@@ -85,7 +91,7 @@ export function ChatMessageWindow() {
                       whiteSpace: 'pre-wrap',
                     }}
                   >
-                    {editContent + ' '}
+                    {`${editContent} `}
                   </div>
                   <textarea
                     autoFocus
@@ -99,7 +105,12 @@ export function ChatMessageWindow() {
                           content: editContent,
                         })
                           .then(() => setEditingId(null))
-                          .catch(console.error);
+                          .catch((error) => {
+                            logger.error(
+                              { error, messageId: message._id },
+                              'Failed to update message'
+                            );
+                          });
                       } else if (e.key === 'Escape') {
                         setEditingId(null);
                       }
@@ -132,7 +143,10 @@ export function ChatMessageWindow() {
                         });
                         setEditingId(null);
                       } catch (error) {
-                        console.error('Failed to update message:', error);
+                        logger.error(
+                          { error, messageId: message._id },
+                          'Failed to update message'
+                        );
                       }
                     }}
                     type="button"
@@ -178,7 +192,7 @@ export function ChatMessageWindow() {
                           )
                         ) {
                           deleteMessage({ id: message._id }).catch(
-                            console.error
+                            logger.error
                           );
                         }
                       }}
