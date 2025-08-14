@@ -153,22 +153,31 @@ Example usage: If the user finds a rusty sword, call the tool with properties li
 
       const finalContent = response.content?.toString() || '';
 
-      const latestUserMessage = await ctx.runQuery(api.messages.getLatestUserMessage, {
-        userId: message.userId as Id<'users'>,
-      });
+      const latestUserMessage = await ctx.runQuery(
+        api.messages.getLatestUserMessage,
+        {
+          userId: message.userId as Id<'users'>,
+        }
+      );
 
       // Handle tool calls if any
       if (response.tool_calls && response.tool_calls.length > 0) {
         // Process tool calls in parallel
         const toolPromises = response.tool_calls
-          .filter(toolCall => toolCall.name === 'add_inventory_item')
+          .filter((toolCall) => toolCall.name === 'add_inventory_item')
           .map(async (toolCall) => {
             try {
               // Parse and validate the arguments
               const toolArgs = toolCall.args as {
                 name: string;
                 description: string;
-                type: 'weapon' | 'armor' | 'consumable' | 'document' | 'quest' | 'miscellaneous';
+                type:
+                  | 'weapon'
+                  | 'armor'
+                  | 'consumable'
+                  | 'document'
+                  | 'quest'
+                  | 'miscellaneous';
                 count?: number;
                 weight?: number;
                 value?: number;
@@ -182,7 +191,7 @@ Example usage: If the user finds a rusty sword, call the tool with properties li
               // Store the toolcall result
               await ctx.runMutation(api.messages.insert, {
                 role: 'toolcall',
-                content: formatToolName(toolCall.name),
+                content: `${formatToolName(toolCall.name)}: ${toolArgs.name}`,
                 timestamp: Date.now(),
                 campaignId: message.campaignId,
                 characterId: message.characterId,
@@ -222,5 +231,7 @@ Example usage: If the user finds a rusty sword, call the tool with properties li
 });
 
 function formatToolName(toolName: string): string {
-  return toolName.charAt(0).toUpperCase() + toolName.slice(1).replaceAll('_', ' ');
+  return (
+    toolName.charAt(0).toUpperCase() + toolName.slice(1).replaceAll('_', ' ')
+  );
 }

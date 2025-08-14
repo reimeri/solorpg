@@ -1,6 +1,6 @@
 import { useParams } from '@tanstack/react-router';
 import { useMutation, useQuery } from 'convex/react';
-import { LucideEdit, LucideTrash } from 'lucide-react';
+import { LucideEdit, LucideToolCase, LucideTrash } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { api } from '~/../convex/_generated/api';
 import type { Id } from '~/../convex/_generated/dataModel';
@@ -170,8 +170,11 @@ export function ChatMessageWindow() {
               </div>
             ) : (
               <>
-                <div className="whitespace-pre-wrap break-words">
-                  {message.content}
+                <div className="flex gap-1">
+                  {message.role === 'toolcall' && <LucideToolCase />}
+                  <div className="whitespace-pre-wrap break-words">
+                    {message.content}
+                  </div>
                 </div>
                 <div
                   className={`mt-1 flex items-center justify-between text-xs ${
