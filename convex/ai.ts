@@ -126,6 +126,9 @@ export const generateResponse = internalAction({
         if (msg.role === 'user') {
           return { role: 'human' as const, content: msg.content };
         }
+        if (msg.role === 'toolcall') {
+          return { role: 'assistant' as const, content: msg.content };
+        }
         return { role: msg.role, content: msg.content };
       });
 
@@ -137,7 +140,7 @@ export const generateResponse = internalAction({
 ONLY use the following information if it is relevant to the conversation or actions happening.
 ${args.additionalInfo}
 
-IMPORTANT: You have access to an add_inventory_item tool. Use this tool whenever the user picks up, receives, or finds an item in the story. When using this tool:
+IMPORTANT: You have access to an add_inventory_item tool. Use this tool whenever the user picks up, receives, or finds an item in the story. ONLY FOCUS ON THE USERS LATEST MESSAGE! When using this tool:
 - Set appropriate item properties based on what the item should be
 - Use descriptive names and descriptions
 - Set the type based on the item (weapon, armor, consumable, document, quest, miscellaneous)
@@ -208,6 +211,10 @@ Example usage: If the user finds a rusty sword, call the tool with properties li
         await Promise.all(toolPromises);
       }
 
+      if (finalContent.trim() === '') {
+        return null;
+      }
+
       // Store the AI response
       const responseId = await ctx.runMutation(api.messages.insert, {
         role: 'assistant',
@@ -225,7 +232,7 @@ Example usage: If the user finds a rusty sword, call the tool with properties li
 
       return value;
     } catch (error) {
-      throw new Error('Failed to generate AI response', { cause: error });
+      throw new Error(`Failed to generate AI response: ${error}`);
     }
   },
 });
