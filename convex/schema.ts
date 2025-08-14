@@ -78,7 +78,8 @@ const messages = defineTable({
   role: v.union(
     v.literal('user'),
     v.literal('assistant'),
-    v.literal('system')
+    v.literal('system'),
+    v.literal('toolcall')
   ),
   content: v.string(),
   timestamp: v.number(),

@@ -1,6 +1,6 @@
 import { v } from 'convex/values';
-import { mutation, query } from './_generated/server';
 import { Id } from './_generated/dataModel';
+import { mutation, query } from './_generated/server';
 
 export const get = query({
   args: { id: v.id('messages') },
@@ -14,7 +14,8 @@ export const insert = mutation({
     role: v.union(
       v.literal('user'),
       v.literal('assistant'),
-      v.literal('system')
+      v.literal('system'),
+      v.literal('toolcall')
     ),
     content: v.string(),
     timestamp: v.number(),
@@ -35,8 +36,8 @@ export const insert = mutation({
 });
 
 export const deleteMessage = mutation({
-  args: { 
-    id: v.id('messages') 
+  args: {
+    id: v.id('messages'),
   },
   handler: async (ctx, args) => {
     // Check if message exists
@@ -44,7 +45,7 @@ export const deleteMessage = mutation({
     if (!message) {
       throw new Error('Message not found');
     }
-    
+
     // Delete the message
     await ctx.db.delete(args.id);
     return { success: true };
@@ -52,9 +53,9 @@ export const deleteMessage = mutation({
 });
 
 export const updateMessage = mutation({
-  args: { 
+  args: {
     id: v.id('messages'),
-    content: v.string() 
+    content: v.string(),
   },
   handler: async (ctx, args) => {
     // Check if message exists
@@ -62,12 +63,12 @@ export const updateMessage = mutation({
     if (!message) {
       throw new Error('Message not found');
     }
-    
+
     // Update the message content
-    await ctx.db.patch(args.id, { 
+    await ctx.db.patch(args.id, {
       content: args.content,
     });
-    
+
     return { success: true };
   },
 });

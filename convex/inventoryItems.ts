@@ -109,3 +109,58 @@ export const remove = mutation({
     return await ctx.db.delete(id);
   },
 });
+
+// AI tool for adding inventory items
+export const addItemForUser = mutation({
+  args: {
+    userId: v.id('users'),
+    campaignId: v.id('campaigns'),
+    name: v.string(),
+    description: v.string(),
+    type: v.union(
+      v.literal('weapon'),
+      v.literal('armor'),
+      v.literal('consumable'),
+      v.literal('document'),
+      v.literal('quest'),
+      v.literal('miscellaneous')
+    ),
+    count: v.optional(v.number()),
+    weight: v.optional(v.number()),
+    value: v.optional(v.number()),
+    damage: v.optional(v.number()),
+    defense: v.optional(v.number()),
+    tags: v.optional(v.array(v.string())),
+  },
+  handler: async (ctx, args) => {
+    const {
+      userId,
+      campaignId,
+      name,
+      description,
+      type,
+      count = 1,
+      weight = 0,
+      value = 0,
+      damage = 0,
+      defense = 0,
+      tags = [],
+    } = args;
+
+    const inventoryItem = {
+      name,
+      description,
+      owner: userId,
+      campaignId,
+      type,
+      count,
+      weight,
+      value,
+      damage,
+      defense,
+      tags,
+    };
+
+    return await ctx.db.insert('inventoryItems', inventoryItem);
+  },
+});

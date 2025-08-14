@@ -149,6 +149,7 @@ function InventoryHeader(props: InventoryProps) {
             weight: 0,
             value: 0,
             damage: 0,
+            defense: 0,
             tags: [],
           })
         }
