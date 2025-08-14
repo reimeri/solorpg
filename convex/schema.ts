@@ -86,9 +86,10 @@ const messages = defineTable({
   campaignId: v.optional(v.id('campaigns')),
   characterId: v.optional(v.id('characters')),
   userId: v.id('users'),
+  linkedMessageId: v.optional(v.id('messages')),
 })
   .index('by_campaign', ['campaignId'])
-  .index('by_user', ['userId']);
+  .index('by_user', ['userId']).index('by_linked_message', ['linkedMessageId']);
 
 export default defineSchema({
   ...authTables,

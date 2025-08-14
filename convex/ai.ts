@@ -16,7 +16,8 @@ export const generateResponse = internalAction({
         role: v.union(
           v.literal('user'),
           v.literal('assistant'),
-          v.literal('system')
+          v.literal('system'),
+          v.literal('toolcall')
         ),
         content: v.string(),
       })
@@ -150,7 +151,11 @@ Example usage: If the user finds a rusty sword, call the tool with properties li
       // Get AI response
       const response = await modelWithTools.invoke(formattedMessages.reverse());
 
-      let finalContent = response.content?.toString() || '';
+      const finalContent = response.content?.toString() || '';
+
+      const latestUserMessage = await ctx.runQuery(api.messages.getLatestUserMessage, {
+        userId: message.userId as Id<'users'>,
+      });
 
       // Handle tool calls if any
       if (response.tool_calls && response.tool_calls.length > 0) {
@@ -173,18 +178,25 @@ Example usage: If the user finds a rusty sword, call the tool with properties li
               };
 
               const result = await addInventoryItemTool.invoke(toolArgs);
+
+              // Store the toolcall result
+              await ctx.runMutation(api.messages.insert, {
+                role: 'toolcall',
+                content: formatToolName(toolCall.name),
+                timestamp: Date.now(),
+                campaignId: message.campaignId,
+                characterId: message.characterId,
+                userId: message.userId as Id<'users'>,
+                linkedMessageId: latestUserMessage?._id,
+              });
+
               return `Tool executed: ${result}`;
             } catch (error) {
               return `Tool execution failed: ${error}`;
             }
           });
 
-        const toolResults = await Promise.all(toolPromises);
-
-        // Append tool results to the content
-        if (toolResults.length > 0) {
-          finalContent = `${finalContent}\n\n${toolResults.join('\n')}`;
-        }
+        await Promise.all(toolPromises);
       }
 
       // Store the AI response
@@ -208,3 +220,7 @@ Example usage: If the user finds a rusty sword, call the tool with properties li
     }
   },
 });
+
+function formatToolName(toolName: string): string {
+  return toolName.charAt(0).toUpperCase() + toolName.slice(1).replaceAll('_', ' ');
+}

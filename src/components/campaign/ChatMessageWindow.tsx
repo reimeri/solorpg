@@ -8,11 +8,26 @@ import { createLogger } from '~/lib/logger';
 
 type Message = {
   _id: Id<'messages'>;
-  role: 'user' | 'assistant' | 'system';
+  role: 'user' | 'assistant' | 'system' | 'toolcall';
   content: string;
   timestamp: number;
   userId: Id<'users'>;
 };
+
+function getMessageColor(role: Message['role']) {
+  switch (role) {
+    case 'user':
+      return 'bg-blue-500 text-white';
+    case 'assistant':
+      return 'bg-slate-200 text-slate-800';
+    case 'system':
+      return 'bg-gray-400 text-white';
+    case 'toolcall':
+      return 'bg-green-300 text-green-800';
+    default:
+      return 'bg-gray-200 text-gray-800';
+  }
+}
 
 export function ChatMessageWindow() {
   const { campaignId: rawCampaignId } = useParams({ strict: false });
@@ -73,11 +88,9 @@ export function ChatMessageWindow() {
           }
         >
           <div
-            className={`group/message relative max-w-3/4 rounded-lg p-3 ${
-              message.role === 'user'
-                ? 'bg-blue-500 text-white'
-                : 'bg-slate-200 text-slate-800'
-            }`}
+            className={`group/message relative max-w-3/4 rounded-lg p-3 ${getMessageColor(
+              message.role
+            )}`}
           >
             {editingId === message._id ? (
               <div className="flex w-full flex-col gap-2">
@@ -165,43 +178,47 @@ export function ChatMessageWindow() {
                     message.role === 'user' ? 'text-blue-100' : 'text-slate-500'
                   }`}
                 >
-                  <span>
-                    {new Date(message.timestamp).toLocaleTimeString()}
-                  </span>
+                  {message.role !== 'toolcall' && (
+                    <>
+                      <span>
+                        {new Date(message.timestamp).toLocaleTimeString()}
+                      </span>
 
-                  <div className="invisible flex items-center justify-center gap-1.5 group-hover/message:visible">
-                    <button
-                      aria-label="Edit message"
-                      className="rounded-full p-1.5 transition-colors hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-500"
-                      onClick={() => {
-                        setEditingId(message._id);
-                        setEditContent(message.content);
-                      }}
-                      title="Edit message"
-                      type="button"
-                    >
-                      <LucideEdit size={14} />
-                    </button>
-                    <button
-                      aria-label="Delete message"
-                      className="rounded-full p-1.5 transition-colors hover:bg-red-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-blue-500"
-                      onClick={() => {
-                        if (
-                          confirm(
-                            'Are you sure you want to delete this message?'
-                          )
-                        ) {
-                          deleteMessage({ id: message._id }).catch(
-                            logger.error
-                          );
-                        }
-                      }}
-                      title="Delete message"
-                      type="button"
-                    >
-                      <LucideTrash size={14} />
-                    </button>
-                  </div>
+                      <div className="invisible flex items-center justify-center gap-1.5 group-hover/message:visible">
+                        <button
+                          aria-label="Edit message"
+                          className="rounded-full p-1.5 transition-colors hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-500"
+                          onClick={() => {
+                            setEditingId(message._id);
+                            setEditContent(message.content);
+                          }}
+                          title="Edit message"
+                          type="button"
+                        >
+                          <LucideEdit size={14} />
+                        </button>
+                        <button
+                          aria-label="Delete message"
+                          className="rounded-full p-1.5 transition-colors hover:bg-red-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-blue-500"
+                          onClick={() => {
+                            if (
+                              confirm(
+                                'Are you sure you want to delete this message?'
+                              )
+                            ) {
+                              deleteMessage({ id: message._id }).catch(
+                                logger.error
+                              );
+                            }
+                          }}
+                          title="Delete message"
+                          type="button"
+                        >
+                          <LucideTrash size={14} />
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </>
             )}

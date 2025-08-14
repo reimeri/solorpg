@@ -22,6 +22,7 @@ export const insert = mutation({
     campaignId: v.optional(v.id('campaigns')),
     characterId: v.optional(v.id('characters')),
     userId: v.id('users'),
+    linkedMessageId: v.optional(v.id('messages')),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert('messages', {
@@ -31,6 +32,7 @@ export const insert = mutation({
       campaignId: args.campaignId,
       characterId: args.characterId,
       userId: args.userId,
+      linkedMessageId: args.linkedMessageId,
     });
   },
 });
@@ -48,6 +50,15 @@ export const deleteMessage = mutation({
 
     // Delete the message
     await ctx.db.delete(args.id);
+
+    // Delete any linked messages
+    const linkedMessages = await ctx.db.query('messages').withIndex('by_linked_message', (q) =>
+      q.eq('linkedMessageId', args.id)
+    ).collect();
+    for (const linkedMessage of linkedMessages) {
+      // biome-ignore lint/nursery/noAwaitInLoop: We do what we need to do
+      await ctx.db.delete(linkedMessage._id);
+    }
     return { success: true };
   },
 });
@@ -70,5 +81,14 @@ export const updateMessage = mutation({
     });
 
     return { success: true };
+  },
+});
+
+export const getLatestUserMessage = query({
+  args: { userId: v.id('users') },
+  handler: async (ctx, args) => {
+    return await ctx.db.query('messages').withIndex('by_user', (q) =>
+      q.eq('userId', args.userId)
+    ).order('desc').first();
   },
 });
