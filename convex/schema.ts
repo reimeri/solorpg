@@ -33,6 +33,7 @@ export const inventoryItemFields = v.object({
   weight: v.number(),
   value: v.number(),
   damage: v.number(),
+  defense: v.number(),
   tags: v.array(v.string()),
 });
 export type InventoryItem = Infer<typeof inventoryItemFields>;

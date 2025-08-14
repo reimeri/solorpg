@@ -34,7 +34,7 @@ function InventoryItemDetails({
       </div>
 
       {/* Stats Row */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-5 gap-4">
         <div>
           <h3 className="mb-1 block font-medium text-gray-700 text-sm">
             Count
@@ -65,6 +65,14 @@ function InventoryItemDetails({
           </h3>
           <p className="rounded-md border bg-white p-2 text-center shadow-sm">
             {inventoryItem.damage}
+          </p>
+        </div>
+        <div>
+          <h3 className="mb-1 block font-medium text-gray-700 text-sm">
+            Defense
+          </h3>
+          <p className="rounded-md border bg-white p-2 text-center shadow-sm">
+            {inventoryItem.defense}
           </p>
         </div>
       </div>
@@ -170,6 +178,7 @@ export function InventoryItemView({
     weight: doc.weight,
     value: doc.value,
     damage: doc.damage,
+    defense: doc.defense,
     tags: doc.tags,
   });
 
