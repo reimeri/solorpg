@@ -1,6 +1,6 @@
 import { useConvexQuery } from '@convex-dev/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import type { InventoryItem } from 'convex/schema';
+import type { InventoryItem, LorebookEntry } from 'convex/schema';
 import type { Id } from 'node_modules/convex/dist/esm-types/values/value';
 import { createContext, useState } from 'react';
 import type { Doc } from '~/../convex/_generated/dataModel';
@@ -13,6 +13,8 @@ import { Inventory } from '~/components/campaign/Inventory';
 import { InventoryItemEdit } from '~/components/campaign/InventoryItemEdit';
 import { InventoryItemView } from '~/components/campaign/InventoryItemView';
 import { Lorebook } from '~/components/campaign/Lorebook';
+import { LorebookEntryEdit } from '~/components/campaign/LorebookEntryEdit';
+import { LorebookEntryView } from '~/components/campaign/LorebookEntryView';
 import { TOP_BAR_HEIGHT } from '~/components/TopBar';
 import { api } from '../../../../convex/_generated/api';
 
@@ -44,6 +46,10 @@ function RouteComponent() {
   const [inventorySelectionFunction, setInventorySelectionFunction] = useState<
     ((item: Doc<'inventoryItems'>) => void) | undefined
   >(undefined);
+  const [editedLorebookEntry, setEditedLorebookEntry] =
+    useState<LorebookEntry | null>(null);
+  const [viewedLorebookEntry, setViewedLorebookEntry] =
+    useState<Doc<'LorebookEntries'> | null>(null);
 
   if (!(campaign && character)) {
     return (
@@ -57,6 +63,9 @@ function RouteComponent() {
     editedInventoryItem === null &&
     viewedInventoryItem === null &&
     !expandedInventory;
+
+  const showLorebook =
+    editedLorebookEntry === null && viewedLorebookEntry === null;
 
   return (
     <div
@@ -109,7 +118,26 @@ function RouteComponent() {
           <ChatMessageInput characterId={character._id} />
         </div>
         <div className="my-2 flex w-full max-w-[500px] flex-col">
-          <Lorebook campaignId={campaign._id} />
+          {editedLorebookEntry && (
+            <LorebookEntryEdit
+              lorebookEntry={editedLorebookEntry}
+              setEditedLorebookEntry={setEditedLorebookEntry}
+            />
+          )}
+          {viewedLorebookEntry && (
+            <LorebookEntryView
+              lorebookEntry={viewedLorebookEntry}
+              setViewedLorebookEntry={setViewedLorebookEntry}
+            />
+          )}
+          {showLorebook && (
+            <Lorebook
+              campaign={campaign}
+              campaignId={campaign._id}
+              setEditedLorebookEntry={setEditedLorebookEntry}
+              setViewedLorebookEntry={setViewedLorebookEntry}
+            />
+          )}
         </div>
       </CampaignContext>
     </div>

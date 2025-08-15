@@ -1,4 +1,5 @@
 import { useQuery } from 'convex/react';
+import type { LorebookEntry } from 'convex/schema';
 import {
   LucideAArrowDown,
   LucideAsterisk,
@@ -7,16 +8,18 @@ import {
   LucideCircleQuestionMark,
   LucideFlag,
   LucideHome,
-  LucideIceCream,
   LucideSword,
   LucideUser,
 } from 'lucide-react';
 import { useState } from 'react';
 import { api } from '~/../convex/_generated/api';
-import type { Id } from '~/../convex/_generated/dataModel';
+import type { Doc, Id } from '~/../convex/_generated/dataModel';
 
 interface LoreBookProps {
   campaignId: Id<'campaigns'>;
+  campaign: Doc<'campaigns'>;
+  setEditedLorebookEntry: (entry: LorebookEntry | null) => void;
+  setViewedLorebookEntry: (entry: Doc<'LorebookEntries'> | null) => void;
 }
 
 function LorebookIcon({
@@ -28,7 +31,7 @@ function LorebookIcon({
 }) {
   switch (type) {
     case 'item':
-      return <LucideBox className={className} />;
+      return <LucideSword className={className} />;
     case 'character':
       return <LucideUser className={className} />;
     case 'location':
@@ -66,13 +69,24 @@ export function Lorebook(props: LoreBookProps) {
     <div className="flex h-full w-full flex-col rounded-xl bg-slate-50 p-2 shadow-md">
       <button
         className="mb-2 cursor-pointer rounded-lg bg-neutral-950 px-4 py-2 text-white hover:bg-neutral-900 active:bg-neutral-800"
+        onClick={() =>
+          props.setEditedLorebookEntry({
+            name: '',
+            description: '',
+            type: 'miscellaneous',
+            tags: [],
+            campaignId: props.campaignId,
+            userId: props.campaign.owner,
+            updatedAt: Date.now(),
+          })
+        }
         type="button"
       >
         Add new entry
       </button>
       <div className="mb-4 flex">
         <input
-          className="flex-1 rounded-lg border border-2 border-gray-300 p-2"
+          className="flex-1 rounded-lg border-2 border-gray-300 p-2"
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search lore..."
           type="text"
@@ -121,9 +135,11 @@ export function Lorebook(props: LoreBookProps) {
               return 0;
             })
             .map((entry) => (
-              <div
-                className="cursor-pointer select-none rounded-lg bg-slate-200 p-2 hover:bg-slate-300/80 active:bg-slate-300"
+              <button
+                className="mb-2 w-full cursor-pointer select-none rounded-lg bg-slate-200 p-2 text-left hover:bg-slate-300/80 active:bg-slate-300"
                 key={entry._id}
+                onClick={() => props.setViewedLorebookEntry(entry)}
+                type="button"
               >
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold">{entry.name}</h3>
@@ -136,7 +152,7 @@ export function Lorebook(props: LoreBookProps) {
                 <p className="line-clamp-2 text-ellipsis text-gray-700 text-sm">
                   {entry.description}
                 </p>
-              </div>
+              </button>
             ))}
         </div>
       ) : (

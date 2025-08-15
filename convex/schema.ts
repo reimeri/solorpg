@@ -92,7 +92,10 @@ const messages = defineTable({
   .index('by_user', ['userId'])
   .index('by_linked_message', ['linkedMessageId']);
 
-const LorebookEntries = defineTable({
+/////////////////////////
+// Lorebook
+/////////////////////////
+export const lorebookEntryFields = v.object({
   name: v.string(),
   description: v.string(),
   type: v.union(
@@ -107,7 +110,12 @@ const LorebookEntries = defineTable({
   campaignId: v.id('campaigns'),
   userId: v.id('users'),
   updatedAt: v.number(),
-}).index('by_campaign_and_user', ['campaignId', 'userId']);
+});
+export type LorebookEntry = Infer<typeof lorebookEntryFields>;
+const LorebookEntries = defineTable(lorebookEntryFields).index(
+  'by_campaign_and_user',
+  ['campaignId', 'userId']
+);
 
 export default defineSchema({
   ...authTables,
