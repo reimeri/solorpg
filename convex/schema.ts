@@ -7,7 +7,9 @@ import { type Infer, v } from 'convex/values';
 /////////////////////////
 export const campaignFields = v.object({
   name: v.string(),
-  description: v.string(),
+  scenario: v.string(),
+  firstMessage: v.string(),
+  rules: v.string(),
   owner: v.id('users'),
 });
 export type Campaign = Infer<typeof campaignFields>;
