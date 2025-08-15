@@ -19,6 +19,31 @@ interface LoreBookProps {
   campaignId: Id<'campaigns'>;
 }
 
+function LorebookIcon({
+  type,
+  className,
+}: {
+  type: 'item' | 'character' | 'location' | 'event' | 'quest' | 'miscellaneous';
+  className?: string;
+}) {
+  switch (type) {
+    case 'item':
+      return <LucideBox className={className} />;
+    case 'character':
+      return <LucideUser className={className} />;
+    case 'location':
+      return <LucideHome className={className} />;
+    case 'event':
+      return <LucideCalendarArrowDown className={className} />;
+    case 'quest':
+      return <LucideFlag className={className} />;
+    case 'miscellaneous':
+      return <LucideBox className={className} />;
+    default:
+      return <LucideAsterisk className={className} />;
+  }
+}
+
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: This is a complex component
 export function Lorebook(props: LoreBookProps) {
   const [sortingByNameEnabled, setSortingByNameEnabled] = useState(true);
@@ -102,7 +127,10 @@ export function Lorebook(props: LoreBookProps) {
               >
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold">{entry.name}</h3>
-                  <LucideIceCream className="h-5 w-5 text-neutral-800" />
+                  <LorebookIcon
+                    className="h-5 w-5 text-neutral-800"
+                    type={entry.type}
+                  />
                 </div>
                 <hr className="my-1 border-gray-400" />
                 <p className="line-clamp-2 text-ellipsis text-gray-700 text-sm">
