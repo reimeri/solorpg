@@ -99,7 +99,7 @@ export function ChatMessageInput({
       )}
       <form className="flex w-full items-center gap-2" onSubmit={handleSubmit}>
         <input
-          className="flex-1 rounded-lg border border-slate-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+          className="flex-1 rounded-lg border-0 border-slate-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
           disabled={isSending}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Type your message..."
