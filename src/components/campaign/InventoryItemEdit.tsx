@@ -269,7 +269,7 @@ function InventoryEditForm(props: InventoryItemEditProps) {
           Cancel
         </button>
         <button
-          className="ml-auto rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="ml-auto rounded-lg bg-neutral-950 px-4 py-2 text-white hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
           type="submit"
         >
           Save Changes

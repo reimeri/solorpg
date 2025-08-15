@@ -1,6 +1,12 @@
 import { useParams } from '@tanstack/react-router';
 import { useMutation, useQuery } from 'convex/react';
-import { LucideEdit, LucideToolCase, LucideTrash } from 'lucide-react';
+import {
+  LucideArrowLeft,
+  LucideEdit,
+  LucideSave,
+  LucideToolCase,
+  LucideTrash,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { api } from '~/../convex/_generated/api';
 import type { Id } from '~/../convex/_generated/dataModel';
@@ -17,7 +23,7 @@ type Message = {
 function getMessageColor(role: Message['role']) {
   switch (role) {
     case 'user':
-      return 'bg-blue-500 text-white';
+      return 'bg-neutral-950 text-white';
     case 'assistant':
       return 'bg-slate-200 text-slate-800';
     case 'system':
@@ -139,14 +145,14 @@ export function ChatMessageWindow() {
                 </div>
                 <div className="mt-2 flex justify-end gap-2">
                   <button
-                    className="rounded-lg bg-slate-200 px-3 py-1.5 font-medium text-slate-700 text-sm transition-colors hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    className="rounded-lg bg-neutral-200 px-4 py-1 font-medium text-neutral-900 text-sm transition-colors hover:bg-neutral-300"
                     onClick={() => setEditingId(null)}
                     type="button"
                   >
-                    Cancel
+                    <LucideArrowLeft size={14} />
                   </button>
                   <button
-                    className="rounded-lg bg-blue-600 px-3 py-1.5 font-medium text-sm text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                    className=" ml-auto rounded-lg bg-neutral-200 px-4 py-1 font-medium text-neutral-900 text-sm transition-colors hover:bg-neutral-300 disabled:opacity-50"
                     disabled={!editContent.trim()}
                     onClick={async () => {
                       try {
@@ -164,7 +170,7 @@ export function ChatMessageWindow() {
                     }}
                     type="button"
                   >
-                    Save changes
+                    <LucideSave size={20} />
                   </button>
                 </div>
               </div>

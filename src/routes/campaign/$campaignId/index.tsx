@@ -109,7 +109,7 @@ function RouteComponent() {
           <ChatMessageInput characterId={character._id} />
         </div>
         <div className="my-2 flex w-full max-w-[500px] flex-col">
-          <Lorebook />
+          <Lorebook campaignId={campaign._id} />
         </div>
       </CampaignContext>
     </div>

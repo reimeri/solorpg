@@ -107,7 +107,7 @@ export function ChatMessageInput({
           value={message}
         />
         <button
-          className="rounded-lg bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600 disabled:bg-blue-300"
+          className="cursor-pointer rounded-lg bg-neutral-950 px-4 py-2 text-white transition-colors hover:bg-neutral-800 disabled:cursor-default disabled:bg-neutral-300"
           disabled={!message.trim() || isSending}
           type="submit"
         >

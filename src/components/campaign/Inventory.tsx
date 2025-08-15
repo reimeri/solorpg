@@ -137,7 +137,7 @@ function InventoryHeader(props: InventoryProps) {
     <div className="mb-1 flex items-center gap-2 rounded-t-xl p-2 shadow">
       <h1 className="font-bold text-lg">Inventory</h1>
       <button
-        className="ml-auto cursor-pointer rounded-lg bg-blue-500 px-2 py-1 text-white hover:bg-blue-600 active:bg-blue-700"
+        className="ml-auto cursor-pointer rounded-lg bg-neutral-950 px-2 py-1 text-white hover:bg-neutral-800 active:bg-neutral-700"
         onClick={() =>
           props.setEditedInventoryItem({
             name: '',

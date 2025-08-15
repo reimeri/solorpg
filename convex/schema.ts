@@ -89,7 +89,25 @@ const messages = defineTable({
   linkedMessageId: v.optional(v.id('messages')),
 })
   .index('by_campaign', ['campaignId'])
-  .index('by_user', ['userId']).index('by_linked_message', ['linkedMessageId']);
+  .index('by_user', ['userId'])
+  .index('by_linked_message', ['linkedMessageId']);
+
+const LorebookEntries = defineTable({
+  name: v.string(),
+  description: v.string(),
+  type: v.union(
+    v.literal('character'),
+    v.literal('location'),
+    v.literal('item'),
+    v.literal('event'),
+    v.literal('quest'),
+    v.literal('miscellaneous')
+  ),
+  tags: v.array(v.string()),
+  campaignId: v.id('campaigns'),
+  userId: v.id('users'),
+  updatedAt: v.number(),
+}).index('by_campaign_and_user', ['campaignId', 'userId']);
 
 export default defineSchema({
   ...authTables,
@@ -102,4 +120,5 @@ export default defineSchema({
   campaigns,
   characters,
   messages,
+  LorebookEntries,
 });

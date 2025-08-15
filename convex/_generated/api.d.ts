@@ -20,6 +20,7 @@ import type * as characters from "../characters.js";
 import type * as chat from "../chat.js";
 import type * as http from "../http.js";
 import type * as inventoryItems from "../inventoryItems.js";
+import type * as lorebook from "../lorebook.js";
 import type * as messages from "../messages.js";
 import type * as tasks from "../tasks.js";
 import type * as users from "../users.js";
@@ -40,6 +41,7 @@ declare const fullApi: ApiFromModules<{
   chat: typeof chat;
   http: typeof http;
   inventoryItems: typeof inventoryItems;
+  lorebook: typeof lorebook;
   messages: typeof messages;
   tasks: typeof tasks;
   users: typeof users;

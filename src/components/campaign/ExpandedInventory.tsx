@@ -105,7 +105,7 @@ function FilterButtons({
     <div className="flex w-full items-center space-x-2">
       <button
         className={cn(
-          'w-full rounded-lg bg-neutral-300 px-2 py-1 text-sm hover:bg-red-400',
+          'w-full rounded-lg bg-neutral-950 px-2 py-1 text-sm hover:bg-red-400',
           {
             'bg-red-400': filterMode === 'all',
           }
@@ -116,11 +116,11 @@ function FilterButtons({
         }}
         type="button"
       >
-        <LucideAsterisk className="inline-block" />
+        <LucideAsterisk className="inline-block text-white" />
       </button>
       <button
         className={cn(
-          'w-full rounded-lg bg-neutral-300 px-2 py-1 text-sm hover:bg-red-400',
+          'w-full rounded-lg bg-neutral-950 px-2 py-1 text-sm hover:bg-red-400',
           {
             'bg-red-400': filterMode === 'weapon',
           }
@@ -133,11 +133,11 @@ function FilterButtons({
         }}
         type="button"
       >
-        <LucideSword className="inline-block" />
+        <LucideSword className="inline-block text-white" />
       </button>
       <button
         className={cn(
-          'w-full rounded-lg bg-neutral-300 px-2 py-1 text-sm hover:bg-red-400',
+          'w-full rounded-lg bg-neutral-950 px-2 py-1 text-sm hover:bg-red-400',
           {
             'bg-red-400': filterMode === 'armor',
           }
@@ -150,11 +150,11 @@ function FilterButtons({
         }}
         type="button"
       >
-        <LucideShield className="inline-block" />
+        <LucideShield className="inline-block text-white" />
       </button>
       <button
         className={cn(
-          'w-full rounded-lg bg-neutral-300 px-2 py-1 text-sm hover:bg-red-400',
+          'w-full rounded-lg bg-neutral-950 px-2 py-1 text-sm hover:bg-red-400',
           {
             'bg-red-400': filterMode === 'consumable',
           }
@@ -167,11 +167,11 @@ function FilterButtons({
         }}
         type="button"
       >
-        <LucideCarrot className="inline-block" />
+        <LucideCarrot className="inline-block text-white" />
       </button>
       <button
         className={cn(
-          'w-full rounded-lg bg-neutral-300 px-2 py-1 text-sm hover:bg-red-400',
+          'w-full rounded-lg bg-neutral-950 px-2 py-1 text-sm hover:bg-red-400',
           {
             'bg-red-400': filterMode === 'document',
           }
@@ -184,11 +184,11 @@ function FilterButtons({
         }}
         type="button"
       >
-        <LucideBook className="inline-block" />
+        <LucideBook className="inline-block text-white" />
       </button>
       <button
         className={cn(
-          'w-full rounded-lg bg-neutral-300 px-2 py-1 text-sm hover:bg-red-400',
+          'w-full rounded-lg bg-neutral-950 px-2 py-1 text-sm hover:bg-red-400',
           {
             'bg-red-400': filterMode === 'miscellaneous',
           }
@@ -201,7 +201,7 @@ function FilterButtons({
         }}
         type="button"
       >
-        <LucideBox className="inline-block" />
+        <LucideBox className="inline-block text-white" />
       </button>
     </div>
   );
@@ -259,7 +259,7 @@ function InventoryHeader({
           value={searchString}
         />
         <button
-          className="flex size-8 cursor-pointer items-center justify-center rounded-lg bg-neutral-300 text-white hover:bg-red-400"
+          className="flex size-8 cursor-pointer items-center justify-center rounded-lg bg-neutral-950 text-white hover:bg-red-400"
           onClick={() => {
             props.setExpandedInventory(false);
             setInventorySelectionFunction(undefined);
