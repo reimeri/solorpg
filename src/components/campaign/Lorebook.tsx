@@ -19,6 +19,7 @@ interface LoreBookProps {
   campaignId: Id<'campaigns'>;
 }
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: This is a complex component
 export function Lorebook(props: LoreBookProps) {
   const [sortingByNameEnabled, setSortingByNameEnabled] = useState(true);
   const [sortingByDateEnabled, setSortingByDateEnabled] = useState(false);
@@ -46,31 +47,35 @@ export function Lorebook(props: LoreBookProps) {
       </button>
       <div className="mb-4 flex">
         <input
-          className="flex-1 rounded-lg border border-gray-300 p-2"
+          className="flex-1 rounded-lg border border-2 border-gray-300 p-2"
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search lore..."
           type="text"
           value={searchQuery}
         />
         <button
-          className={`ml-2 cursor-pointer rounded-lg px-2 py-2 text-white ${sortingByNameEnabled ? 'bg-red-400 hover:bg-red-500 active:bg-red-600' : 'bg-neutral-950 hover:bg-neutral-900 active:bg-neutral-800'}`}
+          className={`ml-2 cursor-pointer rounded-lg px-2 py-2 text-white ${sortingByNameEnabled ? 'bg-neutral-950 hover:bg-neutral-900 active:bg-neutral-800' : 'inset-ring-2 inset-ring-neutral-950 hover:bg-neutral-200'}`}
           onClick={() => {
             setSortingByNameEnabled(true);
             setSortingByDateEnabled(false);
           }}
           type="button"
         >
-          <LucideAArrowDown />
+          <LucideAArrowDown
+            className={`${sortingByNameEnabled ? 'text-white' : 'text-neutral-900'}`}
+          />
         </button>
         <button
-          className={`ml-2 cursor-pointer rounded-lg px-2 py-2 text-white ${sortingByDateEnabled ? 'bg-red-400 hover:bg-red-500 active:bg-red-600' : 'bg-neutral-950 hover:bg-neutral-900 active:bg-neutral-800'}`}
+          className={`ml-2 cursor-pointer rounded-lg px-2 py-2 text-white ${sortingByDateEnabled ? 'bg-neutral-950 hover:bg-neutral-900 active:bg-neutral-800' : 'inset-ring-2 inset-ring-neutral-950 hover:bg-neutral-200'}`}
           onClick={() => {
             setSortingByDateEnabled(true);
             setSortingByNameEnabled(false);
           }}
           type="button"
         >
-          <LucideCalendarArrowDown />
+          <LucideCalendarArrowDown
+            className={`${sortingByDateEnabled ? 'text-white' : 'text-neutral-900'}`}
+          />
         </button>
       </div>
       {loreBookEntries !== undefined && loreBookEntries.length !== 0 ? (
@@ -113,53 +118,67 @@ export function Lorebook(props: LoreBookProps) {
       )}
       <div className="mt-auto flex">
         <button
-          className={`mt-2 mr-auto cursor-pointer rounded-lg px-4 py-2 text-white ${selectedCategory === 'all' ? 'bg-red-400 hover:bg-red-500 active:bg-red-600' : 'bg-neutral-950 hover:bg-neutral-900 active:bg-neutral-800'}`}
+          className={`mt-2 mr-auto cursor-pointer rounded-lg px-4 py-2 text-white ${selectedCategory === 'all' ? 'bg-neutral-950 hover:bg-neutral-900 active:bg-neutral-800' : 'inset-ring-2 inset-ring-neutral-950 hover:bg-neutral-200'}`}
           onClick={() => setSelectedCategory('all')}
           type="button"
         >
-          <LucideAsterisk />
+          <LucideAsterisk
+            className={`${selectedCategory === 'all' ? 'text-white' : 'text-neutral-900'}`}
+          />
         </button>
         <button
-          className={`mx-auto mt-2 cursor-pointer rounded-lg px-4 py-2 text-white ${selectedCategory === 'character' ? 'bg-red-400 hover:bg-red-500 active:bg-red-600' : 'bg-neutral-950 hover:bg-neutral-900 active:bg-neutral-800'}`}
+          className={`mx-auto mt-2 cursor-pointer rounded-lg px-4 py-2 text-white ${selectedCategory === 'character' ? 'bg-neutral-950 hover:bg-neutral-900 active:bg-neutral-800' : 'inset-ring-2 inset-ring-neutral-950 hover:bg-neutral-200'}`}
           onClick={() => setSelectedCategory('character')}
           type="button"
         >
-          <LucideUser />
+          <LucideUser
+            className={`${selectedCategory === 'character' ? 'text-white' : 'text-neutral-900'}`}
+          />
         </button>
         <button
-          className={`mx-auto mt-2 cursor-pointer rounded-lg px-4 py-2 text-white ${selectedCategory === 'location' ? 'bg-red-400 hover:bg-red-500 active:bg-red-600' : 'bg-neutral-950 hover:bg-neutral-900 active:bg-neutral-800'}`}
+          className={`mx-auto mt-2 cursor-pointer rounded-lg px-4 py-2 text-white ${selectedCategory === 'location' ? 'bg-neutral-950 hover:bg-neutral-900 active:bg-neutral-800' : 'inset-ring-2 inset-ring-neutral-950 hover:bg-neutral-200'}`}
           onClick={() => setSelectedCategory('location')}
           type="button"
         >
-          <LucideHome />
+          <LucideHome
+            className={`${selectedCategory === 'location' ? 'text-white' : 'text-neutral-900'}`}
+          />
         </button>
         <button
-          className={`mx-auto mt-2 cursor-pointer rounded-lg px-4 py-2 text-white ${selectedCategory === 'item' ? 'bg-red-400 hover:bg-red-500 active:bg-red-600' : 'bg-neutral-950 hover:bg-neutral-900 active:bg-neutral-800'}`}
+          className={`mx-auto mt-2 cursor-pointer rounded-lg px-4 py-2 text-white ${selectedCategory === 'item' ? 'bg-neutral-950 hover:bg-neutral-900 active:bg-neutral-800' : 'inset-ring-2 inset-ring-neutral-950 hover:bg-neutral-200'}`}
           onClick={() => setSelectedCategory('item')}
           type="button"
         >
-          <LucideSword />
+          <LucideSword
+            className={`${selectedCategory === 'item' ? 'text-white' : 'text-neutral-900'}`}
+          />
         </button>
         <button
-          className={`mx-auto mt-2 cursor-pointer rounded-lg px-4 py-2 text-white ${selectedCategory === 'event' ? 'bg-red-400 hover:bg-red-500 active:bg-red-600' : 'bg-neutral-950 hover:bg-neutral-900 active:bg-neutral-800'}`}
+          className={`mx-auto mt-2 cursor-pointer rounded-lg px-4 py-2 text-white ${selectedCategory === 'event' ? 'bg-neutral-950 hover:bg-neutral-900 active:bg-neutral-800' : 'inset-ring-2 inset-ring-neutral-950 hover:bg-neutral-200'}`}
           onClick={() => setSelectedCategory('event')}
           type="button"
         >
-          <LucideCircleQuestionMark />
+          <LucideCircleQuestionMark
+            className={`${selectedCategory === 'event' ? 'text-white' : 'text-neutral-900'}`}
+          />
         </button>
         <button
-          className={`mx-auto mt-2 cursor-pointer rounded-lg px-4 py-2 text-white ${selectedCategory === 'quest' ? 'bg-red-400 hover:bg-red-500 active:bg-red-600' : 'bg-neutral-950 hover:bg-neutral-900 active:bg-neutral-800'}`}
+          className={`mx-auto mt-2 cursor-pointer rounded-lg px-4 py-2 text-white ${selectedCategory === 'quest' ? 'bg-neutral-950 hover:bg-neutral-900 active:bg-neutral-800' : 'inset-ring-2 inset-ring-neutral-950 hover:bg-neutral-200'}`}
           onClick={() => setSelectedCategory('quest')}
           type="button"
         >
-          <LucideFlag />
+          <LucideFlag
+            className={`${selectedCategory === 'quest' ? 'text-white' : 'text-neutral-900'}`}
+          />
         </button>
         <button
-          className={`mt-2 ml-auto cursor-pointer rounded-lg px-4 py-2 text-white ${selectedCategory === 'miscellaneous' ? 'bg-red-400 hover:bg-red-500 active:bg-red-600' : 'bg-neutral-950 hover:bg-neutral-900 active:bg-neutral-800'}`}
+          className={`mt-2 ml-auto cursor-pointer rounded-lg px-4 py-2 text-white ${selectedCategory === 'miscellaneous' ? 'bg-neutral-950 hover:bg-neutral-900 active:bg-neutral-800' : 'inset-ring-2 inset-ring-neutral-950 hover:bg-neutral-200'}`}
           onClick={() => setSelectedCategory('miscellaneous')}
           type="button"
         >
-          <LucideBox />
+          <LucideBox
+            className={`${selectedCategory === 'miscellaneous' ? 'text-white' : 'text-neutral-900'}`}
+          />
         </button>
       </div>
     </div>
