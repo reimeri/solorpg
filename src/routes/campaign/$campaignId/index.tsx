@@ -27,7 +27,9 @@ export const CampaignContext = createContext<{
   _creationTime: number;
   name: string;
   owner: Id<'users'>;
-  description: string;
+  scenario: string;
+  firstMessage: string;
+  rules: string;
 } | null>(null);
 
 function RouteComponent() {

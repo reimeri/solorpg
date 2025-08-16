@@ -13,14 +13,11 @@ export function TopBar() {
         <a className="hover:underline" href="/">
           Home
         </a>
+        <a className="hover:underline" href="/campaigns">
+          Campaigns
+        </a>
         <a className="hover:underline" href="/about">
           About
-        </a>
-        <a
-          className="hover:underline"
-          href="/campaign/kx7d8hcvw15zavdwp6bh0tt1ys7mx0aw"
-        >
-          Campaign
         </a>
         <SignOut />
       </div>

@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CampaignsIndexRouteImport } from './routes/campaigns/index'
 import { Route as AboutIndexRouteImport } from './routes/about/index'
 import { Route as CampaignCampaignIdIndexRouteImport } from './routes/campaign/$campaignId/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CampaignsIndexRoute = CampaignsIndexRouteImport.update({
+  id: '/campaigns/',
+  path: '/campaigns/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutIndexRoute = AboutIndexRouteImport.update({
@@ -32,30 +38,34 @@ const CampaignCampaignIdIndexRoute = CampaignCampaignIdIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutIndexRoute
+  '/campaigns': typeof CampaignsIndexRoute
   '/campaign/$campaignId': typeof CampaignCampaignIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutIndexRoute
+  '/campaigns': typeof CampaignsIndexRoute
   '/campaign/$campaignId': typeof CampaignCampaignIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about/': typeof AboutIndexRoute
+  '/campaigns/': typeof CampaignsIndexRoute
   '/campaign/$campaignId/': typeof CampaignCampaignIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/campaign/$campaignId'
+  fullPaths: '/' | '/about' | '/campaigns' | '/campaign/$campaignId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/campaign/$campaignId'
-  id: '__root__' | '/' | '/about/' | '/campaign/$campaignId/'
+  to: '/' | '/about' | '/campaigns' | '/campaign/$campaignId'
+  id: '__root__' | '/' | '/about/' | '/campaigns/' | '/campaign/$campaignId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutIndexRoute: typeof AboutIndexRoute
+  CampaignsIndexRoute: typeof CampaignsIndexRoute
   CampaignCampaignIdIndexRoute: typeof CampaignCampaignIdIndexRoute
 }
 
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/campaigns/': {
+      id: '/campaigns/'
+      path: '/campaigns'
+      fullPath: '/campaigns'
+      preLoaderRoute: typeof CampaignsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about/': {
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutIndexRoute: AboutIndexRoute,
+  CampaignsIndexRoute: CampaignsIndexRoute,
   CampaignCampaignIdIndexRoute: CampaignCampaignIdIndexRoute,
 }
 export const routeTree = rootRouteImport
