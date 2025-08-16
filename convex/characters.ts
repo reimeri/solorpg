@@ -63,13 +63,15 @@ export const create = mutation({
       mind: v.number(),
       charisma: v.number(),
     }),
-    equipmentSlots: v.optional(v.array(
-      v.object({
-        name: v.string(),
-        equippedItemId: v.optional(v.id('inventoryItems')),
-        enabled: v.boolean(),
-      })
-    )),
+    equipmentSlots: v.optional(
+      v.array(
+        v.object({
+          name: v.string(),
+          equippedItemId: v.optional(v.id('inventoryItems')),
+          enabled: v.boolean(),
+        })
+      )
+    ),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);

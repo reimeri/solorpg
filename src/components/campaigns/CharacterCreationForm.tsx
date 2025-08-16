@@ -70,7 +70,10 @@ function StatInput(props: StatInputProps) {
   const inputId = `stat-${label.toLowerCase()}`;
   return (
     <div className="flex items-center gap-2">
-      <label className="w-12 font-medium text-gray-700 text-sm" htmlFor={inputId}>
+      <label
+        className="w-12 font-medium text-gray-700 text-sm"
+        htmlFor={inputId}
+      >
         {label}:
       </label>
       <input
@@ -216,7 +219,7 @@ export function CharacterCreationForm({
           Character Stats
         </h3>
         <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-                    <StatInput
+          <StatInput
             label="Strength"
             onUpdate={(value: number) => handleStatChange('strength', value)}
             value={stats.strength}
@@ -228,7 +231,9 @@ export function CharacterCreationForm({
           />
           <StatInput
             label="Constitution"
-            onUpdate={(value: number) => handleStatChange('constitution', value)}
+            onUpdate={(value: number) =>
+              handleStatChange('constitution', value)
+            }
             value={stats.constitution}
           />
           <StatInput
