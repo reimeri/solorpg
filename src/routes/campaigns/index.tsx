@@ -5,6 +5,7 @@ import { api } from '~/../convex/_generated/api';
 import type { Doc, Id } from '~/../convex/_generated/dataModel';
 import { CampaignCard } from '~/components/campaigns/CampaignCard';
 import { CampaignForm } from '~/components/campaigns/CampaignForm';
+import { CampaignCreationFlow } from '~/components/campaigns/CampaignCreationFlow';
 import { ConfirmDialog } from '~/components/campaigns/ConfirmDialog';
 import { SvgSpinners180RingWithBg } from '~/components/icons/Spinner';
 
@@ -14,6 +15,7 @@ export const Route = createFileRoute('/campaigns/')({
 
 function RouteComponent() {
   const [showForm, setShowForm] = useState(false);
+  const [showCreationFlow, setShowCreationFlow] = useState(false);
   const [editingCampaign, setEditingCampaign] =
     useState<Doc<'campaigns'> | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{
@@ -31,7 +33,7 @@ function RouteComponent() {
 
   const handleCreateNew = () => {
     setEditingCampaign(null);
-    setShowForm(true);
+    setShowCreationFlow(true);
   };
 
   const handleEdit = (campaign: Doc<'campaigns'>) => {
@@ -47,6 +49,14 @@ function RouteComponent() {
   const handleFormSuccess = () => {
     setShowForm(false);
     setEditingCampaign(null);
+  };
+
+  const handleCreationFlowClose = () => {
+    setShowCreationFlow(false);
+  };
+
+  const handleCreationFlowSuccess = () => {
+    setShowCreationFlow(false);
   };
 
   const handleDeleteRequest = (campaignId: string) => {
@@ -137,6 +147,13 @@ function RouteComponent() {
           campaign={editingCampaign}
           onCancel={handleFormClose}
           onSuccess={handleFormSuccess}
+        />
+      )}
+
+      {showCreationFlow && (
+        <CampaignCreationFlow
+          onCancel={handleCreationFlowClose}
+          onSuccess={handleCreationFlowSuccess}
         />
       )}
 

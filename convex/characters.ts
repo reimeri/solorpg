@@ -49,6 +49,50 @@ export const get = query({
   },
 });
 
+export const create = mutation({
+  args: {
+    name: v.string(),
+    description: v.string(),
+    race: v.string(),
+    campaignId: v.id('campaigns'),
+    level: v.number(),
+    stats: v.object({
+      strength: v.number(),
+      agility: v.number(),
+      constitution: v.number(),
+      mind: v.number(),
+      charisma: v.number(),
+    }),
+    equipmentSlots: v.optional(v.array(
+      v.object({
+        name: v.string(),
+        equippedItemId: v.optional(v.id('inventoryItems')),
+        enabled: v.boolean(),
+      })
+    )),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) {
+      throw new Error('User must be authenticated to create characters');
+    }
+
+    const character = {
+      name: args.name,
+      description: args.description,
+      race: args.race,
+      owner: userId,
+      campaignId: args.campaignId,
+      level: args.level,
+      stats: args.stats,
+      equipmentSlots: args.equipmentSlots || defaultEquipmentSlots,
+    };
+
+    return await ctx.db.insert('characters', character);
+  },
+});
+
 export const setEquippedItem = mutation({
   args: {
     characterId: v.id('characters'),

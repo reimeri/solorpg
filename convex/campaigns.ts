@@ -63,6 +63,67 @@ export const create = mutation({
   },
 });
 
+export const createWithCharacter = mutation({
+  args: {
+    campaign: v.object({
+      name: v.string(),
+      scenario: v.string(),
+      firstMessage: v.string(),
+      rules: v.string(),
+    }),
+    character: v.object({
+      name: v.string(),
+      description: v.string(),
+      race: v.string(),
+      level: v.number(),
+      stats: v.object({
+        strength: v.number(),
+        agility: v.number(),
+        constitution: v.number(),
+        mind: v.number(),
+        charisma: v.number(),
+      }),
+      equipmentSlots: v.array(
+        v.object({
+          name: v.string(),
+          equippedItemId: v.optional(v.id('inventoryItems')),
+          enabled: v.boolean(),
+        })
+      ),
+    }),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) {
+      throw new Error('User must be authenticated to create campaign');
+    }
+
+    // Create campaign first
+    const campaignId = await ctx.db.insert('campaigns', {
+      name: args.campaign.name,
+      scenario: args.campaign.scenario,
+      firstMessage: args.campaign.firstMessage,
+      rules: args.campaign.rules,
+      owner: userId,
+    });
+
+    // Then create character for the campaign
+    const characterId = await ctx.db.insert('characters', {
+      name: args.character.name,
+      description: args.character.description,
+      race: args.character.race,
+      owner: userId,
+      campaignId,
+      level: args.character.level,
+      stats: args.character.stats,
+      equipmentSlots: args.character.equipmentSlots,
+    });
+
+    return { campaignId, characterId };
+  },
+});
+
 export const update = mutation({
   args: {
     campaignId: v.id('campaigns'),
